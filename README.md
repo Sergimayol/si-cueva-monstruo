@@ -1,20 +1,11 @@
 # Práctica 2 - La cueva del monstruo - Sistemas inteligentes
 
-## Getting Started
+Práctica 2 de la asignatura Sistemas Inteligentes, consistente en la implementación de un agente inteligente que resuelva el problema de la cueva del monstruo.
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## Requisitos
 
-## Folder Structure
+- [Java >= 18](https://www.oracle.com/java/technologies/downloads/)
 
-The workspace contains two folders by default, where:
+## Licencia
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+Este proyecto está bajo la licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
