@@ -1,4 +1,4 @@
-# Práctica 1 - El robot - Sistemas inteligentes
+# Práctica 2 - La cueva del monstruo - Sistemas inteligentes
 
 ## Getting Started
 
