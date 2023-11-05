@@ -12,11 +12,6 @@ public abstract class BaseAgent<T> {
 
     protected Characteristic[] characteristics;
     protected BC<T> bc;
-    protected Point position;
-
-    public void addRule(Rule<T> rule) {
-        this.bc.addProdRule(rule);
-    }
 
     public void addRule(CharacteristicLabels[] indices, T action) {
         int[] indicesInt = new int[indices.length];
@@ -26,8 +21,16 @@ public abstract class BaseAgent<T> {
         this.bc.addProdRule(new Rule<>(new Condition(selectCharacteristics(this.characteristics, indicesInt)), action));
     }
 
+    public void updateFacts(Point position) {
+        this.bc.updateFacts(position, this.characteristics);
+    }
+
+    public BC<T> inferBC(Point currentPos) {
+        return this.bc.infer(currentPos, this.characteristics);
+    }
+
     public T checkBC() {
-        return this.bc.check();
+        return this.bc.getAction();
     }
 
     public String printBC() {
@@ -38,22 +41,14 @@ public abstract class BaseAgent<T> {
         return this.bc.toStringEvaluated();
     }
 
-    public abstract void processInputSensors(boolean[] perceptions);
+    public abstract void processInputSensors(boolean[] sensors);
 
     public void setCharacteristics(Characteristic[] characteristics) {
         this.characteristics = characteristics;
     }
 
-    public Point getPosition() {
-        return position;
-    }
-
-    public void setPosition(Point position) {
-        this.position = position;
-    }
-
-    public void setPosition(int x, int y) {
-        this.position = new Point(x, y);
+    public Characteristic[] getCharacteristics() {
+        return this.characteristics;
     }
 
     private Characteristic[] selectCharacteristics(Characteristic[] characteristics, int[] indices) {

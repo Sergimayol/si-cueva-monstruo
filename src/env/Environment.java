@@ -91,4 +91,16 @@ public class Environment<T extends BaseAgent<Executable>> {
         }
     }
 
+    public void finished(int id) {
+    }
+
+    public void getTreasure(int id) {
+    }
+
+    public void shootMonster(int id, Point point) {
+    }
+
+    public void putBridge(int id, Point point) {
+    }
+
 }

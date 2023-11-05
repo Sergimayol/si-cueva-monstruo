@@ -1,63 +1,101 @@
 package agent.labels;
 
-import java.awt.Point;
-
 import agent.Executable;
-import agent.Robot;
+import agent.Explorer;
 
 public enum Action implements Executable {
     MOVE_NORTH {
         @Override
-        public void execute(Object robot) {
-            if (!assertIsRobot(robot)) {
-                return;
-            }
-            ((Robot) robot).setLooking(LookingAt.NORTH);
-            Point currPosition = ((Robot) robot).getPosition();
-            ((Robot) robot).setPosition(currPosition.x - 1, currPosition.y);
+        public void execute(Object explorer) {
+            // Do nothing
         }
     },
     MOVE_SOUTH {
         @Override
-        public void execute(Object robot) {
-            if (!assertIsRobot(robot)) {
-                return;
-            }
-            ((Robot) robot).setLooking(LookingAt.SOUTH);
-            Point currPosition = ((Robot) robot).getPosition();
-            ((Robot) robot).setPosition(currPosition.x + 1, currPosition.y);
+        public void execute(Object explorer) {
+            // Do nothing
         }
     },
     MOVE_EAST {
         @Override
-        public void execute(Object robot) {
-            if (!assertIsRobot(robot)) {
-                return;
-            }
-            ((Robot) robot).setLooking(LookingAt.EAST);
-            Point currPosition = ((Robot) robot).getPosition();
-            ((Robot) robot).setPosition(currPosition.x, currPosition.y + 1);
+        public void execute(Object explorer) {
+            // Do nothing
         }
     },
     MOVE_WEST {
         @Override
-        public void execute(Object robot) {
-            if (!assertIsRobot(robot)) {
-                return;
-            }
-            ((Robot) robot).setLooking(LookingAt.WEST);
-            Point currPosition = ((Robot) robot).getPosition();
-            ((Robot) robot).setPosition(currPosition.x, currPosition.y - 1);
+        public void execute(Object explorer) {
+            // Do nothing
         }
     },
-    DO_NOTHING {
+    SHOOT_NORTH {
         @Override
-        public void execute(Object robot) {
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    SHOOT_SOUTH {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    SHOOT_EAST {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    SHOOT_WEST {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    BRIDGE_NORTH {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    BRIDGE_SOUTH {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    BRIDGE_EAST {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    BRIDGE_WEST {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    TAKE_TREASURE {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    RETURN_HOME {
+        @Override
+        public void execute(Object explorer) {
+            // Do nothing
+        }
+    },
+    NOT_MOVE {
+        @Override
+        public void execute(Object explorer) {
             // Do nothing
         }
     };
 
     private static boolean assertIsRobot(Object obj) {
-        return obj instanceof Robot;
+        return obj instanceof Explorer;
     }
 }
