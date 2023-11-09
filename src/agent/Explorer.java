@@ -41,6 +41,10 @@ public class Explorer extends BaseAgent<Executable> {
         this.initBC();
     }
 
+    public Explorer(int id, Environment<Explorer> env) {
+        this(id, env, true, true);
+    }
+
     private void initCharacteristics() {
         characteristics = new Characteristic[CharacteristicLabels.values().length];
         for (int i = 0; i < characteristics.length; i++) {
@@ -127,6 +131,15 @@ public class Explorer extends BaseAgent<Executable> {
         this.displacement.x += x;
         this.displacement.y += y;
         this.bc.visit(displacement);
+    }
+
+    public void setDefaultPosition() {
+        this.displacement.x = -1;
+        this.displacement.y = -1;
+    }
+
+    public boolean isDefaultPosition() {
+        return this.displacement.x == -1 && this.displacement.y == -1;
     }
 
     public int getId() {

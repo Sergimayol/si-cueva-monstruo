@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import agent.Robot;
+import agent.Explorer;
 import env.Environment;
 import utils.Config;
 import utils.Helpers;
@@ -20,7 +20,7 @@ import utils.FileLogger;
 public class Map extends JPanel {
 
     private Tile[][] tiles;
-    private transient Environment<Robot> environment;
+    private transient Environment<Explorer> environment;
 
     public Map(int size) {
         super();
@@ -28,7 +28,7 @@ public class Map extends JPanel {
         this.setLayout(new BorderLayout());
     }
 
-    public Map(int size, Environment<Robot> environment) {
+    public Map(int size, Environment<Explorer> environment) {
         super();
         this.tiles = new Tile[size][size];
         this.environment = environment;
@@ -46,7 +46,7 @@ public class Map extends JPanel {
         }
     }
 
-    public void setEnvironment(Environment<Robot> environment) {
+    public void setEnvironment(Environment<Explorer> environment) {
         this.environment = environment;
         for (int i = 0; i < this.tiles.length; i++) {
             for (int j = 0; j < this.tiles[0].length; j++) {

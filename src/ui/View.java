@@ -27,7 +27,7 @@ import org.smm.betterswing.Section;
 import org.smm.betterswing.Window;
 import org.smm.betterswing.utils.DirectionAndPosition;
 
-import agent.Robot;
+import agent.Explorer;
 import env.Environment;
 import utils.Config;
 import utils.FileLogger;
@@ -37,8 +37,8 @@ public class View {
 
     private Window window;
     private Map map;
-    private Environment<Robot> env;
-    private Robot robot;
+    private Environment<Explorer> env;
+    private Explorer robot;
     private JSplitPane splitPane;
     private int mapSize;
     private boolean stop;
@@ -48,8 +48,7 @@ public class View {
         this.window = new Window(Config.VIEW_MAIN_WIN_CONFIG_PATH);
         this.window.initConfig();
         this.mapSize = 10;
-        this.robot = new Robot();
-        this.env = new Environment<>(this.mapSize);
+        this.robot = new Explorer(1, this.env = new Environment<>(this.mapSize));
         this.env.setAgent(this.robot);
         this.map = new Map(this.mapSize, this.env);
         this.stop = true;
@@ -70,10 +69,10 @@ public class View {
 
     private void runRobot() {
         while (!this.stop) {
-            Tile tile = this.map.getTile(this.robot.getPosition().x, this.robot.getPosition().y);
+            Tile tile = this.map.getTile(this.robot.getDisplacement().x, this.robot.getDisplacement().y);
             tile.setRobot(false);
             this.env.runNextMovement();
-            final Point robotPos = this.env.getAgent().getPosition();
+            final Point robotPos = this.env.getAgent().getDisplacement();
             tile = this.map.getTile(robotPos.x, robotPos.y);
             tile.setRobot(true);
             this.map.setTile(tile);
@@ -185,8 +184,7 @@ public class View {
             roboButton.setIcon(Helpers.escalateImageIcon(btnICon, btnIconSize, btnIconSize));
             this.mapSize = (int) spinnerModel.getValue();
             this.map.changeMapUIsize(this.mapSize, true);
-            this.env = new Environment<>(this.mapSize);
-            this.robot = new Robot();
+            this.robot = new Explorer(1, this.env = new Environment<>(this.mapSize));
             this.env.setAgent(this.robot);
             this.map.setEnvironment(this.env);
         });
@@ -330,7 +328,7 @@ public class View {
         this.stop = true;
         this.map.changeMapUIsize(this.mapSize, true);
         this.env = new Environment<>(this.mapSize);
-        this.robot = new Robot();
+        this.robot = new Explorer(1, env);
         this.env.setAgent(this.robot);
         this.map.setEnvironment(this.env);
     }

@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import agent.Robot;
+import agent.Explorer;
 import env.Environment;
 import utils.FileLogger;
 
@@ -22,10 +22,10 @@ public class Tile extends JPanel {
     private Point position;
     private boolean isObstacle;
     private boolean isRobot;
-    private transient Environment<Robot> environment;
+    private transient Environment<Explorer> environment;
 
     public Tile(int x, int y, BufferedImage image, BufferedImage robotImage, Color tileColor,
-            Environment<Robot> environment) {
+            Environment<Explorer> environment) {
         this.position = new Point(x, y);
         this.image = image;
         this.robotImage = robotImage;
@@ -36,7 +36,7 @@ public class Tile extends JPanel {
         this.addMouseListener(createMouseListner());
     }
 
-    public void setEnvironment(Environment<Robot> environment) {
+    public void setEnvironment(Environment<Explorer> environment) {
         this.environment = environment;
     }
 
@@ -88,14 +88,14 @@ public class Tile extends JPanel {
                     Tile.this.environment.setObstacleIn(Tile.this.position.x, Tile.this.position.y,
                             Tile.this.isObstacle);
                 }
-                final Robot robot = Tile.this.environment.getAgent();
+                final Explorer robot = Tile.this.environment.getAgent();
                 if (evt.getButton() == MouseEvent.BUTTON3) {
                     if (Tile.this.isRobot) {
                         Tile.this.isRobot = false;
                         robot.setDefaultPosition();
                     } else if (robot.isDefaultPosition()) { // Only one robot
                         Tile.this.isRobot = true;
-                        robot.setPosition(Tile.this.position.x, Tile.this.position.y);
+                        robot.move(Tile.this.position.x, Tile.this.position.y);
                     }
                     Tile.this.environment.setAgent(robot);
                 }
