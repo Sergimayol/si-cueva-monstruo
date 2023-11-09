@@ -99,7 +99,7 @@ public class View {
         icon.setBackground(Color.WHITE);
         icon.setIcon(Helpers.escalateImageIcon(Config.APP_UI_ICON_PATH, 90, 90));
         iconPanel.add(icon);
-        JLabel logoText = new JLabel("Robot Inteligente");
+        JLabel logoText = new JLabel("La cueva del monstruo");
         logoText.setFont(new Font(fontName, Font.ITALIC, 16));
         logoText.setAlignmentX(Component.CENTER_ALIGNMENT);
         icon.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -115,7 +115,7 @@ public class View {
 
         JPanel state = new JPanel();
         state.setLayout(new BoxLayout(state, BoxLayout.Y_AXIS));
-        JLabel stateLabel = new JLabel(" Iniciar robot ");
+        JLabel stateLabel = new JLabel(" Iniciar Ejecución ");
         stateLabel.setFont(new Font(fontName, Font.PLAIN, 14));
         stateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         state.add(stateLabel);
@@ -260,7 +260,7 @@ public class View {
         final String fontName = "Arial";
         panel.setBackground(Color.WHITE);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        JLabel label = new JLabel("Práctica 1 - Robot con pasillos estrechos");
+        JLabel label = new JLabel("Práctica 2 - La cueva del monstruo");
         label.setFont(new Font(fontName, Font.ITALIC, 22));
         JButton button = new JButton("Iniciar Simulación");
         button.addActionListener(e -> {
