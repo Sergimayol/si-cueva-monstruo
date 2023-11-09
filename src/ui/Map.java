@@ -40,7 +40,7 @@ public class Map extends JPanel {
             for (int j = 0; j < this.tiles[0].length; j++) {
                 Color tileColor = (i + j) % 2 == 0 ? Color.WHITE : Color.LIGHT_GRAY;
                 BufferedImage image = Helpers.readImage(Config.OBSTACLE_IMG_PATH);
-                BufferedImage robotImage = Helpers.readImage(Config.ROBOT_IMG_PATH);
+                BufferedImage robotImage = Helpers.readImage(Config.APP_UI_ICON_PATH);
                 this.tiles[i][j] = new Tile(i, j, image, robotImage, tileColor, this.environment);
             }
         }
