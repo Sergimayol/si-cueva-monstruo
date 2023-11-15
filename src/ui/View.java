@@ -86,7 +86,7 @@ public class View {
         FileLogger.info("[VIEW] Creating side bar...");
         JPanel sideBar = new JPanel();
         sideBar.setBackground(Color.WHITE);
-        sideBar.setLayout(new GridLayout(4, 1));
+        sideBar.setLayout(new BoxLayout(sideBar, BoxLayout.Y_AXIS));
 
         final String fontName = "Arial";
         // Logo panel
@@ -189,6 +189,26 @@ public class View {
             this.map.setEnvironment(this.env);
         });
 
+        // Map element buttons panel
+        JPanel mapElementPanel = new JPanel();
+        mapElementPanel.setBackground(Color.WHITE);
+        mapElementPanel.setLayout(new GridLayout(1, 4));
+
+        // Create buttons with images for map elements
+        JButton treasureButton = createMapElementButton("Treasure", "./assets/tesoro.png");
+        JButton explorerButton = createMapElementButton("Explorer", "./assets/explorador.png");
+        JButton holeButton = createMapElementButton("Hole", "./assets/hole.png");
+        JButton monsterButton = createMapElementButton("Monster", "./assets/icon.png");
+
+        // Add more buttons as needed
+
+        // Add buttons to the mapElementPanel
+        mapElementPanel.add(treasureButton);
+        mapElementPanel.add(explorerButton);
+        mapElementPanel.add(holeButton);
+        mapElementPanel.add(monsterButton);
+        // Add more buttons as needed
+
         // Crear el JSpinner utilizando el modelo
         JSpinner puzzleSize = new JSpinner(spinnerModel);
 
@@ -250,8 +270,21 @@ public class View {
         sideBar.add(actionsPanel);
         sideBar.add(puzzleSizePanel);
         sideBar.add(velocityPanel);
+        // Add mapElementPanel to the sideBar
+        sideBar.add(mapElementPanel);
 
         return sideBar;
+    }
+
+    private JButton createMapElementButton(String tooltip, String imagePath) {
+        final int btnIconSize = 50;
+        JButton button = new JButton(Helpers.escalateImageIcon(imagePath, btnIconSize, btnIconSize));
+        button.setToolTipText(tooltip);
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setPreferredSize(new Dimension(10, 8)); // Adjust the dimensions as needed
+        // Add ActionListener or any other customization as needed
+        return button;
     }
 
     private JPanel createInitPage() {
