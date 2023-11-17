@@ -5,102 +5,171 @@ import java.util.Arrays;
 
 import agent.BaseAgent;
 import agent.Executable;
+import agent.Explorer;
 import utils.FileLogger;
 
 public class Environment<T extends BaseAgent<Executable>> {
 
-    private boolean[][] map;
-    private T agent;
+    private TileData[][] map;
+    private TileData[][] snapMap;
+    private T[] agents;
+    private MonstersCaveGui gui;
+    private boolean[] agentsFinished;
+    private static Point[] initialAgentsPosBase = {
+            new Point(1, 0),
+            new Point(1, 1),
+            new Point(0, 0),
+            new Point(0, 1)
+    };
 
-    public Environment(int mapSize) {
-        this.map = new boolean[mapSize][mapSize];
-        for (int i = 0; i < mapSize; i++) {
-            Arrays.fill(this.map[i], false);
+    private Point[] initialAgentsPos;
+
+    public Environment() {
+        this.map = null;
+        this.agents = null;
+        this.initialAgentsPos = null;
+    }
+
+    public Environment(int n, int nAgents, MonstersCaveGui gui) {
+        this.map = new TileData[n][n];
+        this.gui = gui;
+
+        setNumberOfAgents(nAgents);
+
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                map[i][j] = new TileData();
+            }
         }
-        this.agent = null;
     }
 
-    public Environment(boolean[][] map) {
+    public Environment(TileData[][] map, int nAgents, MonstersCaveGui gui) {
+        this.gui = gui;
         this.map = map;
-        this.agent = null;
+
+        setNumberOfAgents(nAgents);
     }
 
-    public boolean hasObstacleIn(int x, int y) {
-        return this.map[x][y];
+    public void snapMap() {
+        this.snapMap = new TileData[this.map.length][this.map[0].length];
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                this.snapMap[i][j] = this.map[i][j].getCopy();
+            }
+        }
     }
 
-    public void setObstacleIn(int x, int y, boolean value) {
-        this.map[x][y] = value;
+    public void restoreMapFromSnap() {
+        if (this.snapMap != null) {
+            this.map = this.snapMap;
+        }
     }
 
-    public void setAgent(T agent) {
-        this.agent = agent;
+    public TileData[][] getSnap() {
+        if (this.snapMap == null) {
+            snapMap();
+        }
+        return this.snapMap;
     }
 
-    public T getAgent() {
-        return this.agent;
+    @SuppressWarnings("unchecked")
+    public void setNumberOfAgents(int nAgents) {
+
+        initialAgentsPos = new Point[nAgents];
+        for (int i = 0; i < initialAgentsPos.length; i++) {
+            initialAgentsPos[i] = this.scale(initialAgentsPosBase[i]);
+        }
+
+        this.agents = (T[]) new BaseAgent[nAgents];
+        this.agentsFinished = new boolean[nAgents];
     }
 
-    public boolean[][] getMap() {
-        return this.map;
-    }
-
-    public void setMap(boolean[][] map) {
-        this.map = map;
+    private Point scale(Point originalPoint) {
+        return new Point(originalPoint.x * (map.length - 1), originalPoint.y * (map.length - 1));
     }
 
     public void runNextMovement() {
-        boolean[] perceptions = this.getPerceptions(this.agent);
-        FileLogger.info("[Environment] Perceptions: " + Arrays.toString(perceptions));
-        this.agent.processInputSensors(perceptions);
-        this.agent.checkBC().execute(this.agent);
-        FileLogger.info("[Environment] Agent position: " + agent.getPosition());
-    }
-
-    public boolean[] getPerceptions(T agent) {
-        boolean[] perceptions = new boolean[8];
-        int idx = 0;
-        final Point robotPos = agent.getPosition();
-        for (int y = robotPos.y - 1; y <= robotPos.y + 1; y++) {
-            for (int x = robotPos.x - 1; x <= robotPos.x + 1; x++) {
-                if (x == robotPos.x && y == robotPos.y) {
-                    continue;
-                }
-                try {
-                    perceptions[idx] = map[x][y];
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    // Map outer perimeter
-                    perceptions[idx] = true;
-                }
-                idx++;
+        for (int i = 0; i < agents.length; i++) {
+            Explorer agent = (Explorer) agents[i];
+            if (!agentsFinished[i]) {
+                agent.processInputSensors(getPerceptions(agent, initialAgentsPos[i]));
+                agent.updateFacts(agent.getDisplacement());
+                agent.inferBC(agent.getDisplacement());
+                agent.checkBC().execute(agent);
             }
         }
-        return perceptions;
     }
 
-    public void printMap() {
-        for (int i = 0; i < this.map.length; i++) {
-            for (int j = 0; j < this.map.length; j++) {
-                if (i == this.agent.getPosition().x && j == this.agent.getPosition().y) {
-                    System.out.print("R ");
-                    continue;
-                }
-                System.out.print(this.map[i][j] ? "X " : "O ");
-            }
-            System.out.println();
+    private boolean[] getPerceptions(Explorer agent, Point initialPos) {
+        Point explorerDisplacement = agent.getDisplacement();
+
+        TileData tile = null;
+        try {
+            tile = map[initialPos.x + explorerDisplacement.x][initialPos.y + explorerDisplacement.y];
+        } catch (Exception e) {
+            tile = new TileData(0, 0, false, true, false, false);
         }
-    }
 
-    public void finished(int id) {
+        // hedor, breeze, treasure, obstacle
+        return new boolean[] { tile.hasHedor(), tile.hasBreeze(), tile.hasTreasure(), tile.hasObstacle(),
+                this.gui.thereAreTreasures() };
     }
 
     public void getTreasure(int id) {
+        Point displacement = ((Explorer) this.agents[id]).getDisplacement();
+        Point basePos = this.initialAgentsPos[id];
+        Point treasurePos = new Point(basePos.x + displacement.x, basePos.y + displacement.y);
+        this.map[treasurePos.x][treasurePos.y].setHasTreasure(false);
+        this.gui.takeTreasure(treasurePos);
     }
 
-    public void shootMonster(int id, Point point) {
+    public void shootMonster(int id, Point direction) {
+        Point displacement = ((Explorer) this.agents[id]).getDisplacement();
+        Point basePos = this.initialAgentsPos[id];
+        Point monsterPos = new Point(basePos.x + displacement.x + direction.x,
+                basePos.y + displacement.y + direction.y);
+        this.map[monsterPos.x][monsterPos.y].setHasMonster(false);
+
+        for (int[] p : CaveEditor.aroundTiles) {
+            try {
+                this.map[monsterPos.x + p[0]][monsterPos.y + p[1]].removeHedor();
+            } catch (ArrayIndexOutOfBoundsException ex) {
+            }
+        }
+
+        this.gui.killMonster(monsterPos);
     }
 
-    public void putBridge(int id, Point point) {
+    public void putBridge(int id, Point direction) {
+        Point displacement = ((Explorer) this.agents[id]).getDisplacement();
+        Point basePos = this.initialAgentsPos[id];
+        Point holePos = new Point(basePos.x + displacement.x + direction.x, basePos.y + displacement.y + direction.y);
+        this.map[holePos.x][holePos.y].setHasHole(false);
+
+        for (int[] p : CaveEditor.aroundTiles) {
+            try {
+                this.map[holePos.x + p[0]][holePos.y + p[1]].removeBreeze();
+            } catch (ArrayIndexOutOfBoundsException ex) {
+            }
+        }
+
+        this.gui.putBridge(holePos);
     }
 
+    public void resetAgentsFinished() {
+        Arrays.fill(agentsFinished, false);
+    }
+
+    public void finished(int id) {
+        agentsFinished[id] = true;
+
+        for (boolean finished : agentsFinished) {
+
+            if (!finished) {
+                return;
+            }
+        }
+
+        this.gui.finishRound();
+    }
 }
