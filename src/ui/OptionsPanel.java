@@ -53,7 +53,6 @@ public class OptionsPanel extends JPanel {
     private JButton stepButton;
     private boolean firstStep = true;
 
-    // private final Vista vista;
     private final Dimension dimensionInputs = new Dimension(145, 30);
 
     private ButtonGroup groupbtn;
@@ -62,6 +61,7 @@ public class OptionsPanel extends JPanel {
     private JFormattedTextField inputDimsTablero;
     private int dimsTableroPrevias;
 
+    @SuppressWarnings("unchecked")
     public OptionsPanel(int n, MonstersCaveGui gui) {
         try {
             this.entitiesClass = new Class[] {
@@ -72,7 +72,7 @@ public class OptionsPanel extends JPanel {
 
             this.entitiesName = new String[this.entitiesClass.length];
             for (int i = 0; i < entitiesName.length; i++) {
-                entitiesName[i] = (String) this.entitiesClass[i].getField("imageName").get(null);
+                entitiesName[i] = (String) this.entitiesClass[i].getField("IMAGENAME").get(null);
             }
 
             this.entitiesConstructor = new Constructor[this.entitiesClass.length];
