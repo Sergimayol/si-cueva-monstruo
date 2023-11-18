@@ -9,11 +9,11 @@ import utils.ImageLoader;
 
 public class Hole extends Entity implements CaveEditor {
 
-    public static BufferedImage image = null;
-    public static BufferedImage imageCovered = null;
-    public static final String imagePath = "./assets/images/hole.png";
-    public static final String imageCoveredPath = "./assets/images/planks.png";
-    public static final String imageName = "hole";
+    private static BufferedImage image = null;
+    private static BufferedImage imageCovered = null;
+    public static final String IMAGEPATH = "./assets/images/hole.png";
+    public static final String IMAGECOVEREDPATH = "./assets/images/planks.png";
+    public static final String IMAGENAME = "hole";
     private boolean covered = false;
 
     public Hole(int x, int y) {
@@ -25,8 +25,8 @@ public class Hole extends Entity implements CaveEditor {
     }
 
     public static void loadResizedImage(int width, int height) {
-        image = ImageLoader.loadImageScaled(imagePath, width, height);
-        imageCovered = ImageLoader.loadImageScaled(imageCoveredPath, width, height);
+        image = ImageLoader.loadImageScaled(IMAGEPATH, width, height);
+        imageCovered = ImageLoader.loadImageScaled(IMAGECOVEREDPATH, width, height);
     }
 
     @Override
