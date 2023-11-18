@@ -37,25 +37,4 @@ public class Helpers {
         }
     }
 
-    /**
-     * Creates the log file and the path to it if it does not exist
-     * 
-     * @return true if the file was created, false otherwise
-     */
-    public static boolean createLogFileAndPathIfNotExists() {
-        File file = new File(Config.PATH_TO_LOGS);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        file = new File(Config.LOG_FILE_PATH);
-        if (!file.exists()) {
-            try {
-                return file.createNewFile();
-            } catch (Exception e) {
-                throw new RuntimeException("Error creating log file");
-            }
-        }
-        return true;
-    }
-
 }
