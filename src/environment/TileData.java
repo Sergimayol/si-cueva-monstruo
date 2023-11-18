@@ -1,38 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package environment;
 
 import java.io.Serializable;
 
-/**
- *
- * @author ccf20
- */
-public class TileData implements Serializable{
+public class TileData implements Serializable {
 
-  // Signals
-  private int hedorCounter;
-  private int breezeCounter;
-  private boolean hasTreasure;
-  private boolean hasObstacle;
+    // Signals
+    private int hedorCounter;
+    private int breezeCounter;
+    private boolean hasTreasure;
+    private boolean hasObstacle;
 
-  // Entities
-  private boolean hasMonster;
-  private boolean hasHole;
+    // Entities
+    private boolean hasMonster;
+    private boolean hasHole;
 
-
-  public TileData() {
+    public TileData() {
         this.hedorCounter = 0;
         this.breezeCounter = 0;
         this.hasTreasure = false;
         this.hasObstacle = false;
         this.hasMonster = false;
         this.hasHole = false;
-  }
+    }
 
-    public TileData(int hedorCounter, int breezeCounter, boolean hasTreasure, 
+    public TileData(int hedorCounter, int breezeCounter, boolean hasTreasure,
             boolean hasObstacle, boolean hasMonster, boolean hasHole) {
         this.hedorCounter = hedorCounter;
         this.breezeCounter = breezeCounter;
@@ -45,12 +37,12 @@ public class TileData implements Serializable{
     public boolean hasHedor() {
         return this.hedorCounter > 0;
     }
-    
-    public void addHedor(){
+
+    public void addHedor() {
         this.hedorCounter++;
     }
-    
-    public void removeHedor(){
+
+    public void removeHedor() {
         this.hedorCounter--;
     }
 
@@ -58,11 +50,11 @@ public class TileData implements Serializable{
         return this.breezeCounter > 0;
     }
 
-    public void addBreeze(){
+    public void addBreeze() {
         this.breezeCounter++;
     }
-    
-    public void removeBreeze(){
+
+    public void removeBreeze() {
         this.breezeCounter--;
     }
 
@@ -98,34 +90,31 @@ public class TileData implements Serializable{
         this.hasHole = hasHole;
     }
 
-    public TileData getCopy(){
-        return new TileData(hedorCounter, breezeCounter, hasTreasure, 
-            hasObstacle, hasMonster, hasHole);
+    public TileData getCopy() {
+        return new TileData(hedorCounter, breezeCounter, hasTreasure,
+                hasObstacle, hasMonster, hasHole);
     }
-  
 
-  @Override
-  public String toString() {
-    return (
-      "=== TileData ===\n" +
-      "hedorCounter: " +
-      hedorCounter +
-      "\n" +
-      "breezeCounter: " +
-      breezeCounter +
-      "\n" +
-      "hasMonster: " +
-      hasMonster +
-      "\n" +
-      "hasHole: " +
-      hasHole +
-      "\n" +
-      "hasTreasure: " +
-      hasTreasure +
-      "\n" +
-      "hasObstacle: " +
-      hasObstacle +
-      "\n"
-    );
-  }
+    @Override
+    public String toString() {
+        return ("=== TileData ===\n" +
+                "hedorCounter: " +
+                hedorCounter +
+                "\n" +
+                "breezeCounter: " +
+                breezeCounter +
+                "\n" +
+                "hasMonster: " +
+                hasMonster +
+                "\n" +
+                "hasHole: " +
+                hasHole +
+                "\n" +
+                "hasTreasure: " +
+                hasTreasure +
+                "\n" +
+                "hasObstacle: " +
+                hasObstacle +
+                "\n");
+    }
 }

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package gui;
 
 import agent.ExplorerMap;
@@ -19,10 +16,6 @@ import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
-/**
- *
- * @author ccf20
- */
 public class MapDisplayer extends JComponent {
 
     public static Dimension dimension = new Dimension(400, 400);
@@ -42,7 +35,7 @@ public class MapDisplayer extends JComponent {
         super();
         this.explorerMap = explorerMap;
         this.initialPos = initialPos;
-        
+
         this.setBackground(Color.red);
     }
 
@@ -82,7 +75,8 @@ public class MapDisplayer extends JComponent {
                             && !(info.isOk()))) {
 
                         if (x >= 0 && x < nTiles && y >= 0 && y < nTiles) {
-                            g.fillRect(initialX + (x * this.tileSize), initialY + (y * this.tileSize), this.tileSize, this.tileSize);
+                            g.fillRect(initialX + (x * this.tileSize), initialY + (y * this.tileSize), this.tileSize,
+                                    this.tileSize);
                         }
                     } else {
 
@@ -91,7 +85,8 @@ public class MapDisplayer extends JComponent {
                             int xInit = initialX + (x * this.tileSize);
                             int yInit = initialY + (y * this.tileSize);
 
-                            if (xInit >= 0 && xInit < (w - this.wallWidth*2) && yInit >= 0 && yInit < (h - this.wallWidth*2)) {
+                            if (xInit >= 0 && xInit < (w - this.wallWidth * 2) && yInit >= 0
+                                    && yInit < (h - this.wallWidth * 2)) {
                                 String text = Integer.toString(info.getTimesVisited());
                                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -134,7 +129,7 @@ public class MapDisplayer extends JComponent {
                 }
             }
 
-            //g.drawRect(0, 0, dimension.width - 1, dimension.height - 1);
+            // g.drawRect(0, 0, dimension.width - 1, dimension.height - 1);
             gOriginal.drawImage(resizeImage(img, dimension.width, dimension.height), 0, 0, this);
             g.dispose();
         }
@@ -165,8 +160,8 @@ public class MapDisplayer extends JComponent {
         g.dispose();
         return resized;
     }
-    
-    public void setShowTimesVisited(boolean show){
+
+    public void setShowTimesVisited(boolean show) {
         this.showTimesVisited = show;
     }
 

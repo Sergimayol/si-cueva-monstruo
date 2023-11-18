@@ -1,11 +1,12 @@
 package productionrules;
 
-import agent.Explorer;
 import agent.ExplorerMap;
+import agent.Labels;
 import environment.TileInfo;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class BC<T> {
 
@@ -19,8 +20,8 @@ public class BC<T> {
         this.facts = new ExplorerMap();
     }
 
-    public BC(LinkedList<Rule<T>> contentRules) {
-        this.contentRules = contentRules;
+    public BC(List<Rule<T>> contentRules) {
+        this.contentRules = new LinkedList<>(contentRules);
         this.facts = new ExplorerMap();
     }
 
@@ -29,7 +30,6 @@ public class BC<T> {
     }
 
     public void updateFacts(Point position, Characteristic[] info) {
-        //TODO: hacer metodo wrapper para no cargarse todo lo que ya sabemos
         facts.putTile(position, info);
     }
 
@@ -57,7 +57,7 @@ public class BC<T> {
         TileInfo[] adjacentTiles = this.getTiles(this.getAdjacentPoints(p));
         for (int i = 0; i < adjacentTiles.length; i++) {
             this.infer(facts.getTile(p), i, adjacentTiles, characteristics);
-            characteristics[Explorer.Labels.PRIO_NORTH.ordinal() + i].setValue(
+            characteristics[Labels.PRIO_NORTH.ordinal() + i].setValue(
                     false);
         }
 
@@ -65,7 +65,7 @@ public class BC<T> {
             return this;
         }
 
-        characteristics[Explorer.Labels.PRIO_NORTH.ordinal() + minIndex].setValue(
+        characteristics[Labels.PRIO_NORTH.ordinal() + minIndex].setValue(
                 true);
 
         return this;
@@ -155,22 +155,15 @@ public class BC<T> {
             }
         }
 
-        
         // TIENE MONSTRUO EN X -> DISPARAR HACIA X
-        characteristics[Explorer.Labels.SHOOT_NORTH.ordinal() + currentIndex].setValue(
-                    adj.hasMonster());
-        
+        characteristics[Labels.SHOOT_NORTH.ordinal() + currentIndex].setValue(adj.hasMonster());
+
         // TIENE AGUJERO EN X -> PUENTE EN X
-        characteristics[Explorer.Labels.BRIDGE_NORTH.ordinal() + currentIndex].setValue(
-                    adj.hasHole());
-//        if (adj.hasMonster()) {
-//            characteristics[Explorer.Labels.SHOOT_NORTH.ordinal() + currentIndex].setValue(
-//                    true);
-//        }
+        characteristics[Labels.BRIDGE_NORTH.ordinal() + currentIndex].setValue(adj.hasHole());
 
     }
 
-    public LinkedList<Rule<T>> getContentRules() {
+    public List<Rule<T>> getContentRules() {
         return contentRules;
     }
 
@@ -198,11 +191,11 @@ public class BC<T> {
     }
 
     private Point[] getAdjacentPoints(Point p) {
-        return new Point[]{
-            new Point(p.x - 1, p.y), //Arriba
-            new Point(p.x + 1, p.y), //Abajo
-            new Point(p.x, p.y + 1), //Derecha
-            new Point(p.x, p.y - 1) //Izquierda
+        return new Point[] {
+                new Point(p.x - 1, p.y), // Arriba
+                new Point(p.x + 1, p.y), // Abajo
+                new Point(p.x, p.y + 1), // Derecha
+                new Point(p.x, p.y - 1) // Izquierda
         };
     }
 
@@ -217,6 +210,5 @@ public class BC<T> {
     public ExplorerMap getMap() {
         return this.facts;
     }
-
 
 }

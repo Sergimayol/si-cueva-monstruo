@@ -5,185 +5,14 @@ import environment.TileInfo;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import productionrules.BC;
 import productionrules.Characteristic;
 import utils.RichPoint;
 
-public class Explorer extends GridAgent<Executable> {
-
-    public int getId() {
-        return this.id;
-    }
-
-    public enum Action implements Executable {
-        MOVE_NORTH {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).move(-1, 0);
-
-            }
-        },
-        MOVE_SOUTH {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).move(1, 0);
-            }
-        },
-        MOVE_EAST {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).move(0, 1);
-            }
-        },
-        MOVE_WEST {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).move(0, -1);
-            }
-        },
-        SHOOT_NORTH {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-
-                ((Explorer) explorer).shootMonster(-1, 0);
-            }
-        },
-        SHOOT_SOUTH {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).shootMonster(1, 0);
-            }
-        },
-        SHOOT_EAST {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).shootMonster(0, 1);
-            }
-        },
-        SHOOT_WEST {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).shootMonster(0, -1);
-            }
-        },
-        BRIDGE_NORTH {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-
-                ((Explorer) explorer).putBridge(-1, 0);
-            }
-        },
-        BRIDGE_SOUTH {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).putBridge(1, 0);
-            }
-        },
-        BRIDGE_EAST {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).putBridge(0, 1);
-            }
-        },
-        BRIDGE_WEST {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).putBridge(0, -1);
-            }
-        },
-        TAKE_TREASURE {
-            @Override
-            public void execute(Object explorer) {
-                //                System.out.println("[Robot.java] Action: " + this.toString());
-                ((Explorer) explorer).takeTreasure();
-            }
-        },
-        RETURN_HOME {
-            @Override
-            public void execute(Object explorer) {
-                Explorer currExplorer = ((Explorer) explorer);
-
-                if (currExplorer.getDisplacement().x == 0 && currExplorer.getDisplacement().y == 0) {
-                    currExplorer.finished();
-                    return;
-                }
-
-                if (currExplorer.getMovemementsToHome() == null) {
-                    currExplorer.setMovemementsToHome(
-                            currExplorer.calculateActionsToHome(
-                                    new RichPoint(currExplorer.getDisplacement()),
-                                    new RichPoint(0, 0)
-                            )
-                    );
-
-                }
-
-                if (currExplorer.getMovemementsToHome().size() > 0) {
-
-                    RichPoint movement = currExplorer.getMovemementsToHome().remove(0);
-                    currExplorer.move(movement.x, movement.y);
-
-                }
-
-            }
-        },
-        NOT_MOVE {
-            @Override
-            public void execute(Object explorer) {
-            }
-        };
-
-        public void execute(Explorer explorer) {
-            System.out.println("NOT IMPLEMENTED");
-        }
-    }
-
-    // Characteristics labels
-    // PRIO_NORTH,
-    // PRIO_SOUTH,
-    // PRIO_EAST,
-    // PRIO_WEST,
-    // ORDER: hedor, breeze, treasure, obstacle
-    public enum Labels {
-        HEDOR,
-        NOT_HEDOR,
-        BREEZE,
-        NOT_BREEZE,
-        TREASURE,
-        NOT_TREASURE,
-        OBSTACLE,
-        NOT_OBSTACLE,
-        TREASURES_REMAINING,
-        NOT_TREASURES_REMAINING,
-        CAN_SHOOT,
-        CAN_PUT_BRIDGE,
-        PRIO_NORTH,
-        PRIO_SOUTH,
-        PRIO_EAST,
-        PRIO_WEST,
-        SHOOT_NORTH,
-        SHOOT_SOUTH,
-        SHOOT_EAST,
-        SHOOT_WEST,
-        BRIDGE_NORTH,
-        BRIDGE_SOUTH,
-        BRIDGE_EAST,
-        BRIDGE_WEST
-    }
+public class Explorer extends GridAgent<Executable<Explorer>> {
 
     private Point displacement;
     private boolean canShoot;
@@ -220,48 +49,55 @@ public class Explorer extends GridAgent<Executable> {
     public void setCanPutBridge(boolean canPutBridge) {
         this.canPutBridge = canPutBridge;
     }
-    
-    
 
-    public ArrayList<RichPoint> getMovemementsToHome() {
+    public List<RichPoint> getMovemementsToHome() {
         return movemementsToHome;
     }
 
-    public void setMovemementsToHome(ArrayList<RichPoint> points) {
-        this.movemementsToHome = points;
+    public void setMovemementsToHome(List<RichPoint> points) {
+        this.movemementsToHome = new ArrayList<>(points);
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     private void initBC() {
 
         // RETURN HOME
-        this.addProdRule(new int[]{Labels.NOT_TREASURES_REMAINING.ordinal()}, Explorer.Action.RETURN_HOME);
+        this.addProdRule(new int[] { Labels.NOT_TREASURES_REMAINING.ordinal() }, Action.RETURN_HOME);
 
         // TAKE TREASURE
-        this.addProdRule(new int[]{
-            Labels.TREASURE.ordinal()
-        },
-                Explorer.Action.TAKE_TREASURE);
+        this.addProdRule(new int[] { Labels.TREASURE.ordinal() }, Action.TAKE_TREASURE);
 
         // SHOOT TO THE MONSTER
-        this.addProdRule(new int[]{Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_NORTH.ordinal()}, Explorer.Action.SHOOT_NORTH);
-        this.addProdRule(new int[]{Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_SOUTH.ordinal()}, Explorer.Action.SHOOT_SOUTH);
-        this.addProdRule(new int[]{Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_EAST.ordinal()}, Explorer.Action.SHOOT_EAST);
-        this.addProdRule(new int[]{Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_WEST.ordinal()}, Explorer.Action.SHOOT_WEST);
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_NORTH.ordinal() },
+                Action.SHOOT_NORTH);
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_SOUTH.ordinal() },
+                Action.SHOOT_SOUTH);
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_EAST.ordinal() },
+                Action.SHOOT_EAST);
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_WEST.ordinal() },
+                Action.SHOOT_WEST);
 
         // PUT BRIDGE
-        this.addProdRule(new int[]{Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_NORTH.ordinal()}, Explorer.Action.BRIDGE_NORTH);
-        this.addProdRule(new int[]{Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_SOUTH.ordinal()}, Explorer.Action.BRIDGE_SOUTH);
-        this.addProdRule(new int[]{Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_EAST.ordinal()}, Explorer.Action.BRIDGE_EAST);
-        this.addProdRule(new int[]{Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_WEST.ordinal()}, Explorer.Action.BRIDGE_WEST);
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_NORTH.ordinal() },
+                Action.BRIDGE_NORTH);
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_SOUTH.ordinal() },
+                Action.BRIDGE_SOUTH);
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_EAST.ordinal() },
+                Action.BRIDGE_EAST);
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_WEST.ordinal() },
+                Action.BRIDGE_WEST);
 
         // MOVE WITHOUT PRIORITY
-        this.addProdRule(new int[]{Labels.PRIO_NORTH.ordinal()}, Explorer.Action.MOVE_NORTH);
-        this.addProdRule(new int[]{Labels.PRIO_SOUTH.ordinal()}, Explorer.Action.MOVE_SOUTH);
-        this.addProdRule(new int[]{Labels.PRIO_EAST.ordinal()}, Explorer.Action.MOVE_EAST);
-        this.addProdRule(new int[]{Labels.PRIO_WEST.ordinal()}, Explorer.Action.MOVE_WEST);
+        this.addProdRule(new int[] { Labels.PRIO_NORTH.ordinal() }, Action.MOVE_NORTH);
+        this.addProdRule(new int[] { Labels.PRIO_SOUTH.ordinal() }, Action.MOVE_SOUTH);
+        this.addProdRule(new int[] { Labels.PRIO_EAST.ordinal() }, Action.MOVE_EAST);
+        this.addProdRule(new int[] { Labels.PRIO_WEST.ordinal() }, Action.MOVE_WEST);
 
         // DEFAULT ACTION (CAN'T MOVE)
-        this.addProdRule(new int[]{}, Explorer.Action.NOT_MOVE);
+        this.addProdRule(new int[] {}, Action.NOT_MOVE);
 
     }
 
@@ -306,7 +142,7 @@ public class Explorer extends GridAgent<Executable> {
             characteristics[i * 2].setValue(perceptions[i]);
             characteristics[(i * 2) + 1].setValue(!perceptions[i]);
         }
-        
+
         characteristics[Labels.CAN_SHOOT.ordinal()].setValue(this.canShoot);
         characteristics[Labels.CAN_PUT_BRIDGE.ordinal()].setValue(this.canPutBridge);
     }
@@ -317,10 +153,10 @@ public class Explorer extends GridAgent<Executable> {
 
     private ArrayList<RichPoint> getAdjacentPoints(RichPoint p) {
         ArrayList<RichPoint> points = new ArrayList<>();
-        points.add(new RichPoint(p.x - 1, p.y, p)); //Arriba
-        points.add(new RichPoint(p.x + 1, p.y, p)); //Abajo
-        points.add(new RichPoint(p.x, p.y + 1, p)); //Derecha
-        points.add(new RichPoint(p.x, p.y - 1, p)); //Izquierda
+        points.add(new RichPoint(p.x - 1, p.y, p)); // Arriba
+        points.add(new RichPoint(p.x + 1, p.y, p)); // Abajo
+        points.add(new RichPoint(p.x, p.y + 1, p)); // Derecha
+        points.add(new RichPoint(p.x, p.y - 1, p)); // Izquierda
 
         TileInfo[] tiles = getTiles(points);
         for (int i = tiles.length - 1; i >= 0; i--) {
@@ -328,7 +164,6 @@ public class Explorer extends GridAgent<Executable> {
             if (tile != null && !tile.hasObstacle() && tile.isOk()) {
                 continue;
             }
-            System.out.println(tile);
             points.remove(i);
 
         }
@@ -346,30 +181,31 @@ public class Explorer extends GridAgent<Executable> {
     }
 
     private void calculateManhattan(RichPoint punt, RichPoint desti) {
-        punt.distanceToEnd = Math.abs(punt.x - desti.x) + Math.abs(punt.y - desti.y);
+        punt.distanceToEnd = Math.abs(punt.x - desti.x) + (double) Math.abs(punt.y - desti.y);
     }
 
-    public ArrayList<RichPoint> calculateActionsToHome(RichPoint origen, RichPoint desti) {   // Tipus pot ser MANHATTAN o EUCLIDIA
+    public List<RichPoint> calculateActionsToHome(RichPoint origen, RichPoint desti) { // Tipus pot ser MANHATTAN o
+                                                                                       // EUCLIDIA
         ArrayList<RichPoint> path = new ArrayList<>();
 
         // Implementa l'algoritme aquí
-        //Cream oberts, tancats i les variables necessaries per l'algoritme
-        ArrayList tancats = new ArrayList<RichPoint>();
-        Queue oberts = new PriorityQueue<RichPoint>();//Oberts es un heap perque es cerca heuristica
+        // Cream oberts, tancats i les variables necessaries per l'algoritme
+        ArrayList<RichPoint> tancats = new ArrayList<>();
+        Queue<RichPoint> oberts = new PriorityQueue<>();// Oberts es un heap perque es cerca heuristica
         RichPoint actual = null;
 
         ArrayList<RichPoint> successors;
         boolean trobat = false;
 
         // Afegim el node inicial a la llista de tancats
-        origen.distanceFromOrigin = 0; //El primer node té distancia zero a si mateix
+        origen.distanceFromOrigin = 0; // El primer node té distancia zero a si mateix
         oberts.add(origen);
 
         // Mentre no trobem el cami i hagi nodes per visitar iteram
         while (!trobat && !oberts.isEmpty()) {
 
             // Agafam el primer
-            actual = (RichPoint) oberts.poll();
+            actual = oberts.poll();
 
             // Si hem trobat el node final aturem la cerca
             if (actual.equals(desti)) {
@@ -378,14 +214,14 @@ public class Explorer extends GridAgent<Executable> {
                 // Si no
                 // Agafam els successors valids
                 successors = getAdjacentPoints(actual);
-                //Afegim cada successor que no estigui dins oberts ni tancats a oberts
+                // Afegim cada successor que no estigui dins oberts ni tancats a oberts
                 for (RichPoint successor : successors) {
 
                     successor.distanceFromOrigin = actual.distanceFromOrigin + 1;
 
                     if (isInClosed(tancats, successor)) {
                         for (int i = 0; i < tancats.size(); i++) {
-                            RichPoint punt = (RichPoint) tancats.get(i);
+                            RichPoint punt = tancats.get(i);
                             if (successor == punt) {
                                 if (successor.distanceFromOrigin < punt.distanceFromOrigin) {
                                     tancats.remove(i);
@@ -396,8 +232,7 @@ public class Explorer extends GridAgent<Executable> {
                             }
                         }
                     } else if (oberts.contains(successor)) {
-                        for (Object p : oberts) {
-                            RichPoint punt = (RichPoint) p;
+                        for (RichPoint punt : oberts) {
                             if (successor == punt) {
                                 if (successor.distanceFromOrigin < punt.distanceFromOrigin) {
                                     punt.previous = actual;
@@ -423,12 +258,10 @@ public class Explorer extends GridAgent<Executable> {
         actual = actual.previous;
         while (!actual.equals(origen)) {
             path.add(subtractPoints(previ, actual));
-            //System.out.println(subtractPoints(previ, actual));
             previ = actual;
             actual = actual.previous;
         }
         path.add(subtractPoints(previ, origen));
-        //System.out.println(subtractPoints(previ, origen));
 
         Collections.reverse(path);
 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package gui;
 
 import entities.CaveEditor;
@@ -13,10 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-/**
- *
- * @author ccf20
- */
 public class CaveInfo implements Serializable {
 
     private static final String basePath = "test_maps/";
@@ -48,8 +40,7 @@ public class CaveInfo implements Serializable {
         CaveInfo caveInfo = null;
         try {
             ObjectInputStream ois = new ObjectInputStream(
-                    new FileInputStream(filePath)
-            );
+                    new FileInputStream(filePath));
             caveInfo = (CaveInfo) ois.readObject();
             ois.close();
         } catch (IOException | ClassNotFoundException e) {
@@ -77,8 +68,7 @@ public class CaveInfo implements Serializable {
 
         try {
             ObjectOutputStream oos = new ObjectOutputStream(
-                    new FileOutputStream(filePath)
-            );
+                    new FileOutputStream(filePath));
             oos.writeObject(this);
             oos.close();
         } catch (IOException e) {

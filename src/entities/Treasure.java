@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package entities;
 
 import environment.TileData;
@@ -10,10 +7,6 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import utils.ImageLoader;
 
-/**
- *
- * @author ccf20
- */
 public class Treasure extends Entity implements CaveEditor {
 
     public static BufferedImage imageClosed = null;

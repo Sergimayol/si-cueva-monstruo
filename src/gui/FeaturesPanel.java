@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package gui;
 
 import java.awt.Color;
@@ -20,10 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import utils.ImageLoader;
 
-/**
- *
- * @author ccf20
- */
 public class FeaturesPanel extends JPanel {
 
     private final int iconSize = 30;

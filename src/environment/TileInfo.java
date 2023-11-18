@@ -1,13 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package environment;
 
-/**
- *
- * @author ccf20
- */
 public class TileInfo {
 
     // Information
@@ -18,8 +11,8 @@ public class TileInfo {
     private boolean notHasHedor;
     private boolean hasBreeze;
     private boolean notHasBreeze;
-//    private boolean hasTreasure;
-//    private boolean notHasTreasure;
+    // private boolean hasTreasure;
+    // private boolean notHasTreasure;
     private boolean hasObstacle;
     private boolean notHasObstacle;
 
@@ -36,7 +29,7 @@ public class TileInfo {
     }
 
     public TileInfo(boolean hasHedor, boolean notHasHedor, boolean hasBreeze,
-            boolean notHasBreeze, /*boolean hasTreasure, boolean notHasTreasure,*/
+            boolean notHasBreeze, /* boolean hasTreasure, boolean notHasTreasure, */
             boolean hasObstacle, boolean notHasObstacle, boolean hasMonster,
             boolean notHasMonster, boolean maybeHasMonster, boolean hasHole,
             boolean notHasHole, boolean maybeHasHole) {
@@ -44,8 +37,8 @@ public class TileInfo {
         this.notHasHedor = notHasHedor;
         this.hasBreeze = hasBreeze;
         this.notHasBreeze = notHasBreeze;
-//        this.hasTreasure = hasTreasure;
-//        this.notHasTreasure = notHasTreasure;
+        // this.hasTreasure = hasTreasure;
+        // this.notHasTreasure = notHasTreasure;
         this.hasObstacle = hasObstacle;
         this.notHasObstacle = notHasObstacle;
         this.hasMonster = hasMonster;
@@ -160,21 +153,21 @@ public class TileInfo {
         this.maybeHasHole = true;
     }
 
-//    public boolean hasTreasure() {
-//        return hasTreasure;
-//    }
-//
-//    public void setTreasure() {
-//        this.hasTreasure = true;
-//    }
-//
-//    public boolean notHasTreasure() {
-//        return notHasTreasure;
-//    }
-//
-//    public void setNotTreasure() {
-//        this.notHasTreasure = true;
-//    }
+    // public boolean hasTreasure() {
+    // return hasTreasure;
+    // }
+    //
+    // public void setTreasure() {
+    // this.hasTreasure = true;
+    // }
+    //
+    // public boolean notHasTreasure() {
+    // return notHasTreasure;
+    // }
+    //
+    // public void setNotTreasure() {
+    // this.notHasTreasure = true;
+    // }
 
     public boolean hasObstacle() {
         return hasObstacle;

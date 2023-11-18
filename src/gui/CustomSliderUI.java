@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package gui;
 
 import java.awt.Color;
@@ -15,10 +11,6 @@ import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.plaf.basic.BasicSliderUI;
 
-/**
- *
- * @author ccf20
- */
 class CustomSliderUI extends BasicSliderUI {
 
     private static final int TRACK_HEIGHT = 8;
@@ -26,8 +18,7 @@ class CustomSliderUI extends BasicSliderUI {
     private static final int TRACK_ARC = 5;
     private static final Dimension THUMB_SIZE = new Dimension(15, 15);
     private final RoundRectangle2D.Float trackShape = new RoundRectangle2D.Float();
-    
-    
+
     public CustomSliderUI(final JSlider b) {
         super(b);
     }

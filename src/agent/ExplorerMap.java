@@ -1,19 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package agent;
 
-import agent.Explorer.Labels;
 import environment.TileInfo;
 import java.awt.Point;
 import java.util.HashMap;
 import productionrules.Characteristic;
 
-/**
- *
- * @author ccf20
- */
 public class ExplorerMap extends HashMap<String, TileInfo> {
 
     public ExplorerMap() {
@@ -35,23 +27,14 @@ public class ExplorerMap extends HashMap<String, TileInfo> {
                 prevInfo.setNotObstacle();
             }
 
-//            // Si es tesoro se pone
-//            if (evalCharacteristic(Labels.TREASURE, info)) {
-//                prevInfo.setTreasure();
-//            }
-//
-//            // Si no es tesoro se pone
-//            if (evalCharacteristic(Labels.NOT_TREASURE, info)) {
-//                prevInfo.setNotTreasure();
-//            }
-
             // Si habia brisa y antes no habias detectado que no hubiera pones que hay brisa
             if (evalCharacteristic(Labels.BREEZE, info)
                     && !prevInfo.notHasBreeze()) {
                 prevInfo.setBreeze();
             }
 
-            // Si no habia brisa y antes no habias detectado que hubiera pones que no hay brisa
+            // Si no habia brisa y antes no habias detectado que hubiera pones que no hay
+            // brisa
             if (evalCharacteristic(Labels.NOT_BREEZE, info)) {
                 prevInfo.setNotBreeze();
             }
@@ -62,11 +45,12 @@ public class ExplorerMap extends HashMap<String, TileInfo> {
                 prevInfo.setHedor();
             }
 
-            // Si no habia hedor y antes no habias detectado que hubiera pones que no hay hedor
+            // Si no habia hedor y antes no habias detectado que hubiera pones que no hay
+            // hedor
             if (evalCharacteristic(Labels.NOT_HEDOR, info)) {
                 prevInfo.setNotHedor();
             }
-            
+
             prevInfo.setNotMonster();
             prevInfo.setNotHole();
         }
@@ -86,18 +70,16 @@ public class ExplorerMap extends HashMap<String, TileInfo> {
 
         return info;
     }
-    
-    public TileInfo getTileNoAdd(Point position) {
 
-        TileInfo info = this.get(this.pointToString(position));
-        return info;
+    public TileInfo getTileNoAdd(Point position) {
+        return this.get(this.pointToString(position));
     }
 
     private boolean evalCharacteristic(Labels label, Characteristic[] info) {
         return info[label.ordinal()].getValue();
     }
-    
-    private String pointToString(Point p){
+
+    private String pointToString(Point p) {
         return p.x + "," + p.y;
     }
 

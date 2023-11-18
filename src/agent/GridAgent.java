@@ -16,12 +16,7 @@ public abstract class GridAgent<T> {
     }
 
     public void addProdRule(int[] indices, T action) {
-        this.bc.addProdRule(
-                new Rule<T>(
-                        new Condition(selectCharacteristics(this.characteristics, indices)),
-                        action
-                )
-        );
+        this.bc.addProdRule(new Rule<>(new Condition(selectCharacteristics(this.characteristics, indices)), action));
     }
 
     public void updateFacts(Point position) {
@@ -49,16 +44,13 @@ public abstract class GridAgent<T> {
     public void setCharacteristics(Characteristic[] characteristics) {
         this.characteristics = characteristics;
     }
-    
+
     public Characteristic[] getCharacteristics() {
         return this.characteristics;
     }
 
     // ==========================================================================
-    private Characteristic[] selectCharacteristics(
-            Characteristic[] characteristics,
-            int[] indices
-    ) {
+    private Characteristic[] selectCharacteristics(Characteristic[] characteristics, int[] indices) {
         Characteristic[] resultCharacteristics = new Characteristic[indices.length];
         for (int i = 0; i < indices.length; i++) {
             resultCharacteristics[i] = characteristics[indices[i]];
