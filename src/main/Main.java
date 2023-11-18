@@ -1,11 +1,11 @@
 package main;
 
-import gui.MonstersCaveGui;
+import ui.MonstersCaveGui;
 
-public class MonstersCaveMain {
+public class Main {
 
     public static void main(String[] args) {
-        (new MonstersCaveMain()).start();
+        (new Main()).start();
     }
 
     public void start() {

@@ -4,7 +4,9 @@ package agent;
 import environment.TileInfo;
 import java.awt.Point;
 import java.util.HashMap;
-import productionrules.Characteristic;
+
+import agent.labels.Labels;
+import agent.rules.Characteristic;
 
 public class ExplorerMap extends HashMap<String, TileInfo> {
 

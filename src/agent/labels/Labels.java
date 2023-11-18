@@ -1,4 +1,4 @@
-package agent;
+package agent.labels;
 
 // Characteristics labels
 // PRIO_NORTH,

@@ -1,5 +1,5 @@
 
-package entities;
+package ui.entities;
 
 import environment.TileData;
 import java.awt.Graphics2D;

@@ -1,5 +1,5 @@
 
-package entities;
+package ui.entities;
 
 import java.awt.Point;
 import java.io.Serializable;

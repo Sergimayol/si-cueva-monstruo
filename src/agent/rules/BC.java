@@ -1,8 +1,9 @@
-package productionrules;
+package agent.rules;
 
 import agent.ExplorerMap;
-import agent.Labels;
+import agent.labels.Labels;
 import environment.TileInfo;
+
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedList;

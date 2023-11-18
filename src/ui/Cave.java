@@ -1,11 +1,12 @@
-package gui;
+package ui;
 
 import agent.Explorer;
-import entities.CaveEditor;
-import entities.Hole;
-import entities.Monster;
-import entities.Treasure;
 import environment.Environment;
+import ui.entities.CaveEditor;
+import ui.entities.Hole;
+import ui.entities.Monster;
+import ui.entities.Treasure;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -49,7 +50,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     private boolean explorersActive = false;
     private boolean caveBlocked = false;
     private int treasuresRemaining = 0;
-    
+
     // Constructor del tauler
     public Cave(int n, MonstersCaveGui gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
@@ -62,14 +63,13 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         this.explorerDisplayers = explorerDisplayers;
 
         this.setSizeMaps();
-        
+
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
-        
-        
+
         // Set initial position of each explorer
         setExplorerInitialTiles();
-        
+
         for (Class cl : gui.getEntityClasses()) {
             try {
                 cl.getMethod("loadResizedImage", int.class, int.class)
@@ -85,16 +85,18 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             }
         }
 
-        BufferedImage backgroundImage = ImageLoader.loadImageScaled(Tile.backgroundImagePath, costatCasella, costatCasella);
+        BufferedImage backgroundImage = ImageLoader.loadImageScaled(Tile.backgroundImagePath, costatCasella,
+                costatCasella);
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 tiles[i][j] = new Tile(i, j, costatCasella, dimsBorde, backgroundImage);
             }
         }
     }
-    
-        // Constructor del tauler
-    public Cave(Tile[][] tiles, MonstersCaveGui gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
+
+    // Constructor del tauler
+    public Cave(Tile[][] tiles, MonstersCaveGui gui, Environment<Explorer> env,
+            ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
         this.gui = gui;
         this.env = env;
@@ -105,14 +107,13 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         this.explorerDisplayers = explorerDisplayers;
 
         this.setSizeMaps();
-        
+
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
-        
-        
+
         // Set initial position of each explorer
         setExplorerInitialTiles();
-        
+
         for (Class cl : gui.getEntityClasses()) {
             try {
                 cl.getMethod("loadResizedImage", int.class, int.class)
@@ -127,46 +128,46 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
                 Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        BufferedImage backgroundImage = ImageLoader.loadImageScaled(Tile.backgroundImagePath, costatCasella, costatCasella);
+
+        BufferedImage backgroundImage = ImageLoader.loadImageScaled(Tile.backgroundImagePath, costatCasella,
+                costatCasella);
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 tiles[i][j].setBackgroundImage(backgroundImage);
                 tiles[i][j].notifyChange();
-                if(tiles[i][j].getEntity() instanceof Treasure){
+                if (tiles[i][j].getEntity() instanceof Treasure) {
                     this.treasuresRemaining++;
                 }
             }
         }
     }
-    
-    public Tile[][] getTiles(){
+
+    public Tile[][] getTiles() {
         return this.tiles;
     }
-    
-    public void setSizeMaps(){
+
+    public void setSizeMaps() {
         this.gui.setSizeMaps(dimensions.width, costatCasella, dimsBorde, costat);
     }
-    
-    public void setExplorerDisplayers(ExplorerDisplayer[] explorerDisplayers){
+
+    public void setExplorerDisplayers(ExplorerDisplayer[] explorerDisplayers) {
         this.explorerDisplayers = explorerDisplayers;
         setExplorerInitialTiles();
         this.paintAll();
     }
-    
-    public void setExplorersActive(boolean active){
+
+    public void setExplorersActive(boolean active) {
         this.explorersActive = active;
     }
-    
-    
-    private void setExplorerInitialTiles(){
+
+    private void setExplorerInitialTiles() {
         Point[] initialPos = this.env.getInitialPos();
         for (int i = 0; i < this.explorerDisplayers.length; i++) {
             Point pos = initialPos[i];
             this.explorerDisplayers[i].setInitialTile(pos.x, pos.y, costatCasella, dimsBorde, costat);
         }
     }
-    
+
     @Override
     public Dimension getPreferredSize() {
         return dimensions;
@@ -202,55 +203,48 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
                 expDisplayer.paintComponent(gbiAux);
             }
         }
-        
-
 
         gbiAux.dispose();
-        
+
         this.gui.updateMaps(biAux);
 
-        
         g.drawImage(biAux, 0, 0, this);
-        
+
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         String text = "Tesoros restantes: " + this.treasuresRemaining;
-        int x = (int)(this.getWidth() * 0.8);
-        int y = (int)((this.dimsBorde / 2) * 0.6);
+        int x = (int) (this.getWidth() * 0.8);
+        int y = (int) ((this.dimsBorde / 2) * 0.6);
         g2.setColor(Color.black);
         g2.setFont(new Font("Calibri", Font.BOLD, 24));
-
 
         Rectangle r = getStringBounds(g2, text);
         int posX = x - 24 / 10 + this.costat / 2 - (int) (r.getWidth() / 2);
         int posY = y + this.costat / 2 + (int) (r.getHeight() / 2);
         g2.drawChars(text.toCharArray(), 0, text.length(), posX, posY);
-        
-        if(this.caveBlocked){
-            
+
+        if (this.caveBlocked) {
+
             text = "Bloqueado";
             x = this.getWidth() / 2;
-            y = (int)((this.dimsBorde / 2) * 0.6);
+            y = (int) ((this.dimsBorde / 2) * 0.6);
             g2.setColor(Color.red);
             g2.setFont(new Font("Calibri", Font.BOLD, 24));
-
 
             r = getStringBounds(g2, text);
             posX = x - 24 / 10 + this.costat / 2 - (int) (r.getWidth() / 2);
             posY = y + this.costat / 2 + (int) (r.getHeight() / 2);
-             
+
             g2.drawChars(text.toCharArray(), 0, text.length(), posX, posY);
         }
 
-        
     }
-    
+
     private Rectangle getStringBounds(Graphics2D g2, String str) {
         FontRenderContext frc = g2.getFontRenderContext();
         GlyphVector gv = g2.getFont().createGlyphVector(frc, str);
         return gv.getPixelBounds(null, 0, 0);
     }
-
 
     public void setExplorerDisplayerSpeedFactor(double speedFactor) {
         for (ExplorerDisplayer expDisplayer : this.explorerDisplayers) {
@@ -304,9 +298,10 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     private void updateObstacles(MouseEvent e) {
-        
-        if(caveBlocked) return;
-        
+
+        if (caveBlocked)
+            return;
+
         try {
             int x = e.getX();
             int y = e.getY();
@@ -317,50 +312,47 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
                 return;
             }
 
-            
-
-            //        TODO: ADD A LOT OF STUFF TO BETTER HANDLE PUTTING OBJECTS
-//        if (this.robotDisplayer.isActive() && this.robotDisplayer.isOnTile(i, j)) {
-//            return;
-//        }
+            // TODO: ADD A LOT OF STUFF TO BETTER HANDLE PUTTING OBJECTS
+            // if (this.robotDisplayer.isActive() && this.robotDisplayer.isOnTile(i, j)) {
+            // return;
+            // }
             Tile tile = tiles[i][j];
 
-//            System.out.println(this.env.getMap()[i][j]);
+            // System.out.println(this.env.getMap()[i][j]);
 
             if (this.buttonPressed == MouseEvent.BUTTON1 && !tile.hasEntity()) {
-                
+
                 Constructor constructor = this.gui.getCurrentEntityConstructor();
                 CaveEditor entity = (CaveEditor) constructor.newInstance(i, j);
-                
-                if(entity instanceof Treasure){
+
+                if (entity instanceof Treasure) {
                     this.treasuresRemaining++;
                 }
-                
+
                 entity.enterCave(this.env.getMap());
-                
+
                 tile.setEntity(entity);
-                
+
                 tile.notifyChange();
             }
 
             if (this.buttonPressed == MouseEvent.BUTTON3 && tile.hasEntity()) {
                 tile.getEntity().exitCave(this.env.getMap());
-                
-                if(tile.getEntity() instanceof Treasure){
+
+                if (tile.getEntity() instanceof Treasure) {
                     this.treasuresRemaining--;
                 }
-                
+
                 tile.setEntity(null);
-                
+
                 tile.notifyChange();
 
             }
 
-//            System.out.println(this.env.getMap()[i][j]);
+            // System.out.println(this.env.getMap()[i][j]);
 
             this.repaint();
-            
-            
+
         } catch (InstantiationException ex) {
             Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
@@ -377,11 +369,11 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         for (ExplorerDisplayer expDisplayer : this.explorerDisplayers) {
             Point center = expDisplayer.getTileIndices();
             int[][] offset = {
-                {0, 0},
-                {1, 0},
-                {0, 1},
-                {-1, 0},
-                {0, -1}
+                    { 0, 0 },
+                    { 1, 0 },
+                    { 0, 1 },
+                    { -1, 0 },
+                    { 0, -1 }
             };
 
             for (int i = 0; i < offset.length; i++) {
@@ -411,25 +403,26 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             for (int j = 0; j < costat; j++) {
                 tiles[i][j].notifyChange();
 
-                //TODO: if not works is for this CHECK
-//                if (tiles[i][j].hasEntity()) {
-//                    tiles[i][j].setEntity(true);
-//                }
+                // TODO: if not works is for this CHECK
+                // if (tiles[i][j].hasEntity()) {
+                // tiles[i][j].setEntity(true);
+                // }
             }
         }
         this.repaint();
     }
 
     public void resetAll() {
-        if (caveBlocked) return;
+        if (caveBlocked)
+            return;
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 CaveEditor entity = tiles[i][j].getEntity();
-                
-                if(entity != null){
+
+                if (entity != null) {
                     entity.exitCave(this.env.getMap());
                 }
-                
+
                 tiles[i][j].setEntity(null);
                 tiles[i][j].notifyChange();
 
@@ -437,8 +430,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         }
         this.repaint();
     }
-    
-    
+
     public Boolean moveExplorer(int i) {
         explorerDisplayers[i].move(this);
         return explorersActive;
@@ -446,7 +438,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
     void takeTreasure(Point position) {
         Tile tile = this.tiles[position.x][position.y];
-        ((Treasure)tile.getEntity()).takeTreasure();
+        ((Treasure) tile.getEntity()).takeTreasure();
         this.treasuresRemaining--;
         tile.notifyChange();
         repaint();
@@ -454,43 +446,42 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
     void killMonster(Point monsterPos) {
         Tile tile = this.tiles[monsterPos.x][monsterPos.y];
-        ((Monster)tile.getEntity()).killMonster();
+        ((Monster) tile.getEntity()).killMonster();
         tile.notifyChange();
         repaint();
     }
-    
-    void lockCave(){
+
+    void lockCave() {
         this.caveBlocked = true;
     }
-    
-    void unlockCave(){
+
+    void unlockCave() {
         this.caveBlocked = false;
     }
-    
-    boolean isLocked(){
+
+    boolean isLocked() {
         return this.caveBlocked;
     }
 
     void putBridge(Point holePos) {
         Tile tile = this.tiles[holePos.x][holePos.y];
-        ((Hole)tile.getEntity()).putBridge();
+        ((Hole) tile.getEntity()).putBridge();
         tile.notifyChange();
         repaint();
     }
 
-    void resetEntities(){
+    void resetEntities() {
         this.treasuresRemaining = 0;
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 Tile tile = tiles[i][j];
-                if(tile.hasEntity()){
+                if (tile.hasEntity()) {
                     CaveEditor entity = tile.getEntity();
                     entity.restoreEntity();
-                    if(entity instanceof Treasure){
+                    if (entity instanceof Treasure) {
                         this.treasuresRemaining++;
                     }
-                    
-                    
+
                     tile.notifyChange();
                 }
             }
@@ -500,5 +491,5 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     boolean thereAreTreasures() {
         return this.treasuresRemaining > 0;
     }
-    
+
 }

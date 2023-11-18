@@ -1,10 +1,11 @@
 package agent;
 
 import java.awt.Point;
-import productionrules.BC;
-import productionrules.Characteristic;
-import productionrules.Condition;
-import productionrules.Rule;
+
+import agent.rules.BC;
+import agent.rules.Characteristic;
+import agent.rules.Condition;
+import agent.rules.Rule;
 
 public abstract class GridAgent<T> {
 

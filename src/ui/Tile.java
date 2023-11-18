@@ -1,6 +1,5 @@
-package gui;
+package ui;
 
-import entities.CaveEditor;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -8,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.JComponent;
+
+import ui.entities.CaveEditor;
 
 /*
 Classe que controla el funcionament d'una casella

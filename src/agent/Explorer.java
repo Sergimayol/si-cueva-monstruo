@@ -8,8 +8,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import productionrules.BC;
-import productionrules.Characteristic;
+
+import agent.labels.Action;
+import agent.labels.Labels;
+import agent.rules.BC;
+import agent.rules.Characteristic;
 import utils.RichPoint;
 
 public class Explorer extends GridAgent<Executable<Explorer>> {

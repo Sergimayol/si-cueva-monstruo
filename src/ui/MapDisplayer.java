@@ -1,5 +1,5 @@
 
-package gui;
+package ui;
 
 import agent.ExplorerMap;
 import environment.TileInfo;

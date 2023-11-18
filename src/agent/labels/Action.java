@@ -1,5 +1,7 @@
-package agent;
+package agent.labels;
 
+import agent.Executable;
+import agent.Explorer;
 import utils.RichPoint;
 
 public enum Action implements Executable<Explorer> {

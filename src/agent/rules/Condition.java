@@ -1,4 +1,4 @@
-package productionrules;
+package agent.rules;
 
 public class Condition {
 
@@ -23,13 +23,13 @@ public class Condition {
 
     @Override
     public String toString() {
-        String repr = "";
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < characteristics.length; i++) {
-            repr += characteristics[i];
+            sb.append(characteristics[i]);
             if (i < characteristics.length - 1) {
-                repr += " AND ";
+                sb.append(" AND ");
             }
         }
-        return repr;
+        return sb.toString();
     }
 }

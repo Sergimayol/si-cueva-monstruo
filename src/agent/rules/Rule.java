@@ -1,4 +1,4 @@
-package productionrules;
+package agent.rules;
 
 public class Rule<T> {
 

@@ -1,8 +1,9 @@
 package environment;
 
 import agent.Explorer;
-import entities.CaveEditor;
-import gui.MonstersCaveGui;
+import ui.MonstersCaveGui;
+import ui.entities.CaveEditor;
+
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -15,10 +16,10 @@ public class Environment<T> implements Serializable {
     private MonstersCaveGui gui;
     private boolean[] agentsFinished;
     private static Point[] initialAgentsPosBase = {
-        new Point(1, 0),
-        new Point(1, 1),
-        new Point(0, 0),
-        new Point(0, 1),};
+            new Point(1, 0),
+            new Point(1, 1),
+            new Point(0, 0),
+            new Point(0, 1), };
 
     private Point[] initialAgentsPos;
 
@@ -84,7 +85,7 @@ public class Environment<T> implements Serializable {
     }
 
     public boolean isObstacle(int i, int j) {
-        return true; //this.map[i][j].is();
+        return true; // this.map[i][j].is();
     }
 
     public TileData getIsObstacleReference(int i, int j) {
@@ -92,11 +93,11 @@ public class Environment<T> implements Serializable {
     }
 
     public void setObstacle(int i, int j, boolean value) {
-        //this.map[i][j].setValue(value);
+        // this.map[i][j].setValue(value);
     }
 
     public void toggleObstacle(int i, int j) {
-        //this.map[i][j].toggle();
+        // this.map[i][j].toggle();
     }
 
     public void setAgents(T[] agents) {
@@ -147,7 +148,8 @@ public class Environment<T> implements Serializable {
         }
 
         // hedor, breeze, treasure, obstacle
-        return new boolean[]{tile.hasHedor(), tile.hasBreeze(), tile.hasTreasure(), tile.hasObstacle(), this.gui.thereAreTreasures()};
+        return new boolean[] { tile.hasHedor(), tile.hasBreeze(), tile.hasTreasure(), tile.hasObstacle(),
+                this.gui.thereAreTreasures() };
     }
 
     public TileData[][] getMap() {
@@ -161,8 +163,7 @@ public class Environment<T> implements Serializable {
     private Point scale(Point originalPoint) {
         return new Point(
                 originalPoint.x * (map.length - 1),
-                originalPoint.y * (map.length - 1)
-        );
+                originalPoint.y * (map.length - 1));
     }
 
     public void getTreasure(int id) {
@@ -176,7 +177,8 @@ public class Environment<T> implements Serializable {
     public void shootMonster(int id, Point direction) {
         Point displacement = ((Explorer) this.agents[id]).getDisplacement();
         Point basePos = this.initialAgentsPos[id];
-        Point monsterPos = new Point(basePos.x + displacement.x + direction.x, basePos.y + displacement.y + direction.y);
+        Point monsterPos = new Point(basePos.x + displacement.x + direction.x,
+                basePos.y + displacement.y + direction.y);
         this.map[monsterPos.x][monsterPos.y].setHasMonster(false);
 
         for (int[] p : CaveEditor.aroundTiles) {
@@ -204,22 +206,22 @@ public class Environment<T> implements Serializable {
 
         this.gui.putBridge(holePos);
     }
-    
-    public void resetAgentsFinished(){
+
+    public void resetAgentsFinished() {
         Arrays.fill(agentsFinished, false);
     }
 
     public void finished(int id) {
         agentsFinished[id] = true;
-        
-        for(boolean finished : agentsFinished){
-            
-            if(!finished){
+
+        for (boolean finished : agentsFinished) {
+
+            if (!finished) {
                 return;
             }
         }
-        
+
         this.gui.finishRound();
-        
+
     }
 }

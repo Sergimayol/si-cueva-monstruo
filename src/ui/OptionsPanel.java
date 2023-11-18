@@ -1,4 +1,4 @@
-package gui;
+package ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -29,10 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import utils.ImageLoader;
-import utils.MutableBoolean;
 
 public class OptionsPanel extends JPanel {
 
@@ -69,9 +65,9 @@ public class OptionsPanel extends JPanel {
     public OptionsPanel(int n, MonstersCaveGui gui) {
         try {
             this.entitiesClass = new Class[] {
-                    Class.forName("entities.Hole"),
-                    Class.forName("entities.Monster"),
-                    Class.forName("entities.Treasure")
+                    Class.forName("ui.entities.Hole"),
+                    Class.forName("ui.entities.Monster"),
+                    Class.forName("ui.entities.Treasure")
             };
 
             this.entitiesName = new String[this.entitiesClass.length];
@@ -84,17 +80,8 @@ public class OptionsPanel extends JPanel {
                 entitiesConstructor[i] = this.entitiesClass[i].getConstructor(int.class, int.class);
             }
 
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchFieldException ex) {
-            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
+        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
+                | IllegalAccessException | NoSuchMethodException ex) {
             Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -111,7 +98,7 @@ public class OptionsPanel extends JPanel {
 
     }
 
-    public Class[] getEntityClasses() {
+    public Class<?>[] getEntityClasses() {
         return this.entitiesClass;
     }
 
@@ -125,14 +112,6 @@ public class OptionsPanel extends JPanel {
         initInputs();
 
         initExplorerSelector();
-    }
-
-    private BufferedImage[] loadImages() {
-        BufferedImage[] images = new BufferedImage[entitiesName.length];
-        for (int i = 0; i < images.length; i++) {
-            images[i] = ImageLoader.loadImage(baseImagesPath + entitiesName[i] + extension);
-        }
-        return images;
     }
 
     private void initInputDimTablero() {
@@ -218,9 +197,7 @@ public class OptionsPanel extends JPanel {
             entradaTexto.setName(etiq);
             inputDimsTablero = entradaTexto;
 
-            entradaTexto.addActionListener((ActionEvent) -> {
-                this.changeCaveSize();
-            });
+            entradaTexto.addActionListener(e -> this.changeCaveSize());
 
             TextPrompt placeholder = new TextPrompt(etiq, entradaTexto);
 
@@ -296,12 +273,8 @@ public class OptionsPanel extends JPanel {
 
         manualButtons.add(stepButton);
 
-        JButton resetButton = createButton("Reset", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeNumberOfExplorers();
-            }
-        });
+        JButton resetButton = createButton("Reset", e -> changeNumberOfExplorers());
+
         resetButton.setBackground(new Color(227, 170, 170));
 
         manualButtons.add(Box.createHorizontalGlue());
@@ -340,22 +313,16 @@ public class OptionsPanel extends JPanel {
         speedSlider.setMajorTickSpacing(1);
         speedSlider.setForeground(Color.BLACK);
 
-        Hashtable labelsSpeed = new Hashtable();
+        Hashtable<Integer, JLabel> labelsSpeed = new Hashtable<>();
         labelsSpeed.put(Integer.valueOf(1), new JLabel("x0.5"));
         labelsSpeed.put(Integer.valueOf(2), new JLabel("x1"));
         labelsSpeed.put(Integer.valueOf(3), new JLabel("x2"));
         labelsSpeed.put(Integer.valueOf(4), new JLabel("x4"));
         speedSlider.setLabelTable(labelsSpeed);
 
-        speedSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                updateRobotSpeedFactor();
-            }
-
-        });
-
+        speedSlider.addChangeListener(e -> updateRobotSpeedFactor());
         speedSliderPanel.add(speedSlider);
+
         speedPanel.add(speedSliderPanel);
         panelExplorers.add(speedPanel);
 
@@ -387,7 +354,7 @@ public class OptionsPanel extends JPanel {
         nExplorersSlider.setMajorTickSpacing(1);
         nExplorersSlider.setForeground(Color.BLACK);
 
-        Hashtable labels = new Hashtable();
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
         JLabel label1 = new JLabel("1");
         label1.setIcon(new ImageIcon("./assets/images/agents/explorer1_left.png"));
         JLabel label2 = new JLabel("2");
@@ -402,15 +369,11 @@ public class OptionsPanel extends JPanel {
         labels.put(Integer.valueOf(4), label4);
         nExplorersSlider.setLabelTable(labels);
 
-        nExplorersSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    changeNumberOfExplorers();
-                }
+        nExplorersSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+                changeNumberOfExplorers();
             }
-
         });
 
         panelExplorers.add(Box.createRigidArea(new Dimension(1, 10)));
@@ -454,8 +417,9 @@ public class OptionsPanel extends JPanel {
         gui.setExplorerDisplayerSpeedFactor(this.getSpeedFactor());
     }
 
+    @SuppressWarnings("unchecked")
     public double getSpeedFactor() {
-        Hashtable<Integer, JLabel> labelTable = (Hashtable) speedSlider.getLabelTable();
+        Hashtable<Integer, JLabel> labelTable = (Hashtable<Integer, JLabel>) speedSlider.getLabelTable();
         Integer value = speedSlider.getValue();
         JLabel label = labelTable.get(value);
         return Double.valueOf(label.getText().replace("x", ""));
@@ -487,21 +451,20 @@ public class OptionsPanel extends JPanel {
 
         @Override
         public void keyTyped(KeyEvent e) {
-            {
-                char c = e.getKeyChar();
-                if (((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE) || input.getText().length() == lim) {
-                    e.consume();
-                }
-
+            char c = e.getKeyChar();
+            if (((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE) || input.getText().length() == lim) {
+                e.consume();
             }
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
+            // Do nothing
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
+            // Do nothing
         }
 
     }
@@ -532,23 +495,17 @@ public class OptionsPanel extends JPanel {
     }
 
     private ActionListener getChangeObstacleActionListener() {
-        return (ActionEvent e) -> {
-            currentSelectedEntityIndex = Integer.parseInt(e.getActionCommand());
-        };
+        return (ActionEvent e) -> currentSelectedEntityIndex = Integer.parseInt(e.getActionCommand());
     }
 
     private ActionListener getControlActionListener() {
         return (ActionEvent e) -> {
-            String action = e.getActionCommand();
-            switch (action) {
-                case "Arrancar" -> {
-                    arrancar();
-                }
-                case "Parar" -> {
-                    parar();
-                }
-                case "Paso" -> {
-                    paso();
+            switch (e.getActionCommand()) {
+                case "Arrancar" -> arrancar();
+                case "Parar" -> parar();
+                case "Paso" -> paso();
+                default -> {
+                    // Do nothing
                 }
             }
         };

@@ -1,7 +1,8 @@
-package gui;
+package ui;
 
-import entities.CaveEditor;
 import environment.TileData;
+import ui.entities.CaveEditor;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
