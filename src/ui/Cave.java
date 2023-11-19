@@ -42,9 +42,9 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             pixelsCostat + (2 * dimsBorde) + 1);
     private int buttonPressed = -1;
     private ExplorerDisplayer[] explorerDisplayers;
-    private transient BufferedImage starterImage = null;
-    private transient Graphics2D gAux = null;
-    private transient BufferedImage biAux = null;
+    private BufferedImage starterImage = null;
+    private Graphics2D gAux = null;
+    private BufferedImage biAux = null;
     private MonstersCaveGui gui;
     private Environment<Explorer> env;
     private boolean explorersActive = false;
@@ -52,7 +52,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     private int treasuresRemaining = 0;
 
     // Constructor del tauler
-    @SuppressWarnings("unchecked")
     public Cave(int n, MonstersCaveGui gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
         this.gui = gui;
@@ -75,8 +74,13 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             try {
                 cl.getMethod("loadResizedImage", int.class, int.class)
                         .invoke(null, this.costatCasella, this.costatCasella);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException
-                    | InvocationTargetException ex) {
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
                 Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -91,7 +95,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     // Constructor del tauler
-    @SuppressWarnings("unchecked")
     public Cave(Tile[][] tiles, MonstersCaveGui gui, Environment<Explorer> env,
             ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
@@ -111,15 +114,19 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         // Set initial position of each explorer
         setExplorerInitialTiles();
 
-        for (Class<ui.entities.CaveEditor> cl : gui.getEntityClasses()) {
+        for (Class cl : gui.getEntityClasses()) {
             try {
                 cl.getMethod("loadResizedImage", int.class, int.class)
                         .invoke(null, this.costatCasella, this.costatCasella);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException
-                    | InvocationTargetException ex) {
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
                 Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
 
         BufferedImage backgroundImage = ImageLoader.loadImageScaled(Tile.backgroundImagePath, costatCasella,
@@ -207,7 +214,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         String text = "Tesoros restantes: " + this.treasuresRemaining;
         int x = (int) (this.getWidth() * 0.8);
-        int y = (int) (((double) this.dimsBorde / 2) * 0.6);
+        int y = (int) ((this.dimsBorde / 2) * 0.6);
         g2.setColor(Color.black);
         g2.setFont(new Font("Calibri", Font.BOLD, 24));
 
@@ -220,7 +227,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
             text = "Bloqueado";
             x = this.getWidth() / 2;
-            y = (int) (((double) this.dimsBorde / 2) * 0.6);
+            y = (int) ((this.dimsBorde / 2) * 0.6);
             g2.setColor(Color.red);
             g2.setFont(new Font("Calibri", Font.BOLD, 24));
 
@@ -247,7 +254,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // Do nothing
     }
 
     @Override
@@ -258,18 +264,18 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     @Override
+    @SuppressWarnings("empty-statement")
     public void mouseReleased(MouseEvent e) {
+        ;
         this.buttonPressed = -1;
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        // Do nothing
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        // Do nothing
     }
 
     private int getIndex(int x) {
@@ -288,7 +294,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // Do nothing
+
     }
 
     private void updateObstacles(MouseEvent e) {
@@ -306,7 +312,13 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
                 return;
             }
 
+            // TODO: ADD A LOT OF STUFF TO BETTER HANDLE PUTTING OBJECTS
+            // if (this.robotDisplayer.isActive() && this.robotDisplayer.isOnTile(i, j)) {
+            // return;
+            // }
             Tile tile = tiles[i][j];
+
+            // System.out.println(this.env.getMap()[i][j]);
 
             if (this.buttonPressed == MouseEvent.BUTTON1 && !tile.hasEntity()) {
 
@@ -337,10 +349,17 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
             }
 
+            // System.out.println(this.env.getMap()[i][j]);
+
             this.repaint();
 
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException ex) {
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
             Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -383,6 +402,11 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 tiles[i][j].notifyChange();
+
+                // TODO: if not works is for this CHECK
+                // if (tiles[i][j].hasEntity()) {
+                // tiles[i][j].setEntity(true);
+                // }
             }
         }
         this.repaint();

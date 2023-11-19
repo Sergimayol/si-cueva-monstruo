@@ -11,6 +11,8 @@ public class TileInfo {
     private boolean notHasHedor;
     private boolean hasBreeze;
     private boolean notHasBreeze;
+    // private boolean hasTreasure;
+    // private boolean notHasTreasure;
     private boolean hasObstacle;
     private boolean notHasObstacle;
 
@@ -23,27 +25,20 @@ public class TileInfo {
     private boolean maybeHasHole;
 
     public TileInfo() {
-        this.hasHedor = false;
-        this.notHasHedor = true;
-        this.hasBreeze = false;
-        this.notHasBreeze = true;
-        this.hasObstacle = false;
-        this.notHasObstacle = true;
-        this.hasMonster = false;
-        this.notHasMonster = true;
-        this.maybeHasMonster = false;
-        this.hasHole = false;
-        this.notHasHole = true;
-        this.maybeHasHole = false;
+
     }
 
-    public TileInfo(boolean hasHedor, boolean notHasHedor, boolean hasBreeze, boolean notHasBreeze, boolean hasObstacle,
-            boolean notHasObstacle, boolean hasMonster, boolean notHasMonster, boolean maybeHasMonster, boolean hasHole,
+    public TileInfo(boolean hasHedor, boolean notHasHedor, boolean hasBreeze,
+            boolean notHasBreeze, /* boolean hasTreasure, boolean notHasTreasure, */
+            boolean hasObstacle, boolean notHasObstacle, boolean hasMonster,
+            boolean notHasMonster, boolean maybeHasMonster, boolean hasHole,
             boolean notHasHole, boolean maybeHasHole) {
         this.hasHedor = hasHedor;
         this.notHasHedor = notHasHedor;
         this.hasBreeze = hasBreeze;
         this.notHasBreeze = notHasBreeze;
+        // this.hasTreasure = hasTreasure;
+        // this.notHasTreasure = notHasTreasure;
         this.hasObstacle = hasObstacle;
         this.notHasObstacle = notHasObstacle;
         this.hasMonster = hasMonster;
@@ -157,6 +152,22 @@ public class TileInfo {
     public void setMaybeHole() {
         this.maybeHasHole = true;
     }
+
+    // public boolean hasTreasure() {
+    // return hasTreasure;
+    // }
+    //
+    // public void setTreasure() {
+    // this.hasTreasure = true;
+    // }
+    //
+    // public boolean notHasTreasure() {
+    // return notHasTreasure;
+    // }
+    //
+    // public void setNotTreasure() {
+    // this.notHasTreasure = true;
+    // }
 
     public boolean hasObstacle() {
         return hasObstacle;

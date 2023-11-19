@@ -3,18 +3,17 @@ package ui.entities;
 
 import environment.TileData;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import utils.ImageLoader;
 
 public class Treasure extends Entity implements CaveEditor {
 
-    private static BufferedImage imageClosed = null;
-    private static BufferedImage imageOpened = null;
-    public static final String IMAGEPATHCLOSED = "./assets/images/treasure_closed.png";
-    public static final String IMAGEPATHOPENED = "./assets/images/treasure_opened.png";
-    public static final String IMAGENAME = "treasure_closed";
+    public static BufferedImage imageClosed = null;
+    public static BufferedImage imageOpened = null;
+    public static final String imagePathClosed = "./assets/images/treasure_closed.png";
+    public static final String imagePathOpened = "./assets/images/treasure_opened.png";
+    public static final String imageName = "treasure_closed";
     private boolean opened = false;
 
     public Treasure(Point position) {
@@ -26,8 +25,8 @@ public class Treasure extends Entity implements CaveEditor {
     }
 
     public static void loadResizedImage(int width, int height) {
-        imageClosed = ImageLoader.loadImageScaled(IMAGEPATHCLOSED, width, height);
-        imageOpened = ImageLoader.loadImageScaled(IMAGEPATHOPENED, width, height);
+        imageClosed = ImageLoader.loadImageScaled(imagePathClosed, width, height);
+        imageOpened = ImageLoader.loadImageScaled(imagePathOpened, width, height);
     }
 
     @Override
@@ -51,8 +50,12 @@ public class Treasure extends Entity implements CaveEditor {
 
     @Override
     public void paintComponent(Graphics2D g2, int x, int y, int size) {
-        final Image image = opened ? imageOpened : imageClosed;
-        g2.drawImage(image, x + (int) Math.ceil(size * 0.25), y + (int) Math.ceil(size * 0.25),
-                (int) Math.ceil(size * 0.50), (int) Math.ceil(size * 0.50), null);
+        if (opened) {
+            g2.drawImage(imageOpened, x + (int) Math.ceil(size * 0.25), y + (int) Math.ceil(size * 0.25),
+                    (int) Math.ceil(size * 0.50), (int) Math.ceil(size * 0.50), null);
+        } else {
+            g2.drawImage(imageClosed, x + (int) Math.ceil(size * 0.25), y + (int) Math.ceil(size * 0.25),
+                    (int) Math.ceil(size * 0.50), (int) Math.ceil(size * 0.50), null);
+        }
     }
 }

@@ -9,11 +9,11 @@ import utils.ImageLoader;
 
 public class Monster extends Entity implements CaveEditor {
 
-    private static BufferedImage imageAlive = null;
-    private static BufferedImage imageDead = null;
-    public static final String IMAGEPATHALIVE = "./assets/images/monster.png";
-    public static final String IMAGEPATHDEAD = "./assets/images/death-monster.png";
-    public static final String IMAGENAME = "monster";
+    public static BufferedImage imageAlive = null;
+    public static BufferedImage imageDead = null;
+    public static final String imagePathAlive = "./assets/images/monster.png";
+    public static final String imagePathDead = "./assets/images/death-monster.png";
+    public static final String imageName = "monster";
     private boolean dead = false;
 
     public Monster(int x, int y) {
@@ -25,8 +25,8 @@ public class Monster extends Entity implements CaveEditor {
     }
 
     public static void loadResizedImage(int width, int height) {
-        imageAlive = ImageLoader.loadImageScaled(IMAGEPATHALIVE, width, height);
-        imageDead = ImageLoader.loadImageScaled(IMAGEPATHDEAD, width, height);
+        imageAlive = ImageLoader.loadImageScaled(imagePathAlive, width, height);
+        imageDead = ImageLoader.loadImageScaled(imagePathDead, width, height);
     }
 
     @Override
