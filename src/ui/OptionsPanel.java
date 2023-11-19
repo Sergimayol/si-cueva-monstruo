@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,13 +50,13 @@ public class OptionsPanel extends JPanel {
     private JButton stepButton;
     private boolean firstStep = true;
 
-    // private final Vista vista;
     private final Dimension dimensionInputs = new Dimension(145, 30);
 
     private ButtonGroup groupbtn;
 
     private JFormattedTextField inputDimsTablero;
 
+    @SuppressWarnings("unchecked")
     public OptionsPanel(int n, View gui) {
         try {
             this.entitiesClass = new Class[] {
@@ -101,6 +100,7 @@ public class OptionsPanel extends JPanel {
     }
 
     private void initComponents() {
+        this.setBackground(Color.WHITE);
         groupbtn = new ButtonGroup();
         initInputDimTablero();
         initInputs();
@@ -110,34 +110,28 @@ public class OptionsPanel extends JPanel {
 
     private void initInputDimTablero() {
         JPanel panelBotones = new JPanel();
-
+        panelBotones.setBackground(Color.WHITE);
         panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
-
-        panelBotones.setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder(
-                                BorderFactory.createLineBorder(Color.black, 2),
-                                "Resolución del entorno (NxN)"),
-                        BorderFactory.createEmptyBorder(10, 5, 15, 5)));
+        panelBotones
+                .setBorder(
+                        BorderFactory.createCompoundBorder(
+                                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 2),
+                                        "Tamaño del mapa (NxN)"),
+                                BorderFactory.createEmptyBorder(10, 5, 15, 5)));
         panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
-
         panelBotones.add(crearInput("NxN", 2, -1));
-
         this.add(panelBotones);
     }
 
     private void initInputs() {
 
         JPanel entradas = new JPanel();
-
+        entradas.setBackground(Color.WHITE);
         entradas.setLayout(new BoxLayout(entradas, BoxLayout.Y_AXIS));
 
-        entradas.setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder(
-                                BorderFactory.createLineBorder(Color.black, 2),
-                                "Elementos"),
-                        BorderFactory.createEmptyBorder(10, 5, 15, 5)));
+        entradas.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 2), "Elementos"),
+                BorderFactory.createEmptyBorder(10, 5, 15, 5)));
 
         int nPiezas = entitiesName.length;
         for (int i = 0; i < nPiezas; i++) {
@@ -152,6 +146,7 @@ public class OptionsPanel extends JPanel {
 
     private JPanel crearInput(String etiq, int lim, int pos) {
         JPanel panelEntrada = new JPanel();
+        panelEntrada.setBackground(Color.WHITE);
         panelEntrada.setLayout(new BoxLayout(panelEntrada, BoxLayout.X_AXIS));
 
         if (pos >= 0) {
@@ -213,10 +208,8 @@ public class OptionsPanel extends JPanel {
 
     public JPanel initExplorerSelector() {
         JPanel panelExplorers = new JPanel();
-
+        panelExplorers.setBackground(Color.WHITE);
         ActionListener buttonAction = getControlActionListener();
-
-        panelExplorers.setLayout(new BoxLayout(panelExplorers, BoxLayout.Y_AXIS));
 
         panelExplorers.setBorder(
                 BorderFactory.createCompoundBorder(
@@ -229,6 +222,7 @@ public class OptionsPanel extends JPanel {
         // ----------------------------------------------------------------------
         // --- AUTO ---
         JPanel autoPanel = new JPanel();
+        autoPanel.setBackground(Color.WHITE);
         autoPanel.setLayout(new GridLayout(2, 1, 0, -15));
 
         JLabel autoTitle = new JLabel("Control automático");
@@ -237,6 +231,7 @@ public class OptionsPanel extends JPanel {
         autoPanel.add(autoTitle);
 
         JPanel autoButtons = new JPanel();
+        autoButtons.setBackground(Color.WHITE);
         autoButtons.setAlignmentX(Component.LEFT_ALIGNMENT);
         autoButtons.setLayout(new BoxLayout(autoButtons, BoxLayout.X_AXIS));
 
@@ -251,26 +246,25 @@ public class OptionsPanel extends JPanel {
 
         // --- MANUAL ---
         JPanel manualPanel = new JPanel();
+        manualPanel.setBackground(Color.WHITE);
         manualPanel.setLayout(new GridLayout(2, 1, 0, -15));
-
-        JPanel manualButtons = new JPanel();
-        manualButtons.setLayout(new BoxLayout(manualButtons, BoxLayout.X_AXIS));
 
         JLabel manualTitle = new JLabel("Control manual");
         manualTitle.setFont(titleFont);
         manualTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         manualPanel.add(manualTitle);
 
+        JPanel manualButtons = new JPanel();
+        manualButtons.setBackground(Color.WHITE);
+        manualButtons.setAlignmentX(Component.LEFT_ALIGNMENT);
+        manualButtons.setLayout(new BoxLayout(manualButtons, BoxLayout.X_AXIS));
+
         stepButton = createButton("Paso", buttonAction);
-
-        manualButtons.add(stepButton);
-
         JButton resetButton = createButton("Reset", e -> changeNumberOfExplorers());
-
         resetButton.setBackground(new Color(227, 170, 170));
 
-        manualButtons.add(Box.createHorizontalGlue());
-
+        manualButtons.add(stepButton);
+        manualButtons.add(Box.createRigidArea(new Dimension(10, 1)));
         manualButtons.add(resetButton);
 
         manualPanel.add(manualButtons);
@@ -282,6 +276,7 @@ public class OptionsPanel extends JPanel {
         // -------------------------- SPEED SLIDER ------------------------------
         // ----------------------------------------------------------------------
         JPanel speedPanel = new JPanel();
+        speedPanel.setBackground(Color.WHITE);
         speedPanel.setLayout(new GridLayout(2, 1, 0, -10));
 
         JLabel speedTitle = new JLabel("Velocidad");
@@ -290,6 +285,7 @@ public class OptionsPanel extends JPanel {
         speedPanel.add(speedTitle);
 
         JPanel speedSliderPanel = new JPanel();
+        speedSliderPanel.setBackground(Color.WHITE);
         speedSliderPanel.setLayout(new GridLayout());
 
         speedSlider = new JSlider(1, 4, 1) {
@@ -298,6 +294,7 @@ public class OptionsPanel extends JPanel {
                 setUI(new CustomSliderUI(this));
             }
         };
+        speedSlider.setBackground(Color.WHITE);
 
         speedSlider.setValue(2);
         speedSlider.setPaintLabels(true);
@@ -322,13 +319,16 @@ public class OptionsPanel extends JPanel {
         // ------------------------ N EXPLORERS SLIDER --------------------------
         // ----------------------------------------------------------------------
         JPanel explorersPanel = new JPanel();
+        explorersPanel.setBackground(Color.WHITE);
         explorersPanel.setLayout(new BoxLayout(explorersPanel, BoxLayout.Y_AXIS));
 
         JLabel explorersTitle = new JLabel("Nº exploradores");
+        explorersTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         explorersTitle.setFont(titleFont);
         explorersPanel.add(explorersTitle);
 
         JPanel sliderPanel = new JPanel();
+        sliderPanel.setBackground(Color.WHITE);
         sliderPanel.setLayout(new GridLayout());
 
         nExplorersSlider = new JSlider(1, 4, 1) {
@@ -337,6 +337,7 @@ public class OptionsPanel extends JPanel {
                 setUI(new CustomSliderUI(this));
             }
         };
+        nExplorersSlider.setBackground(Color.WHITE);
 
         nExplorersSlider.setValue(1);
         nExplorersSlider.setOrientation(SwingConstants.HORIZONTAL);
@@ -372,10 +373,6 @@ public class OptionsPanel extends JPanel {
         explorersPanel.add(sliderPanel);
         panelExplorers.add(explorersPanel);
 
-        // ----------------------------------------------------------------------
-        panelExplorers.add(Box.createVerticalGlue());
-
-        // this.add(panelExplorers);
         return panelExplorers;
     }
 

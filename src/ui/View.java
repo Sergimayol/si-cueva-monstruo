@@ -2,6 +2,7 @@ package ui;
 
 import agent.Explorer;
 import environment.Environment;
+import utils.FileLogger;
 import utils.Helpers;
 
 import java.awt.BorderLayout;
@@ -17,18 +18,18 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 public class View extends JFrame {
 
-    private static final int INITIAL_SIZE = 15;
+    private static final int INITIAL_SIZE = 8;
 
     private Cave cave;
     private OptionsPanel options;
@@ -47,17 +48,19 @@ public class View extends JFrame {
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException ex) {
+            FileLogger.info("Error setting look and feel");
+        }
+
         initComponents();
     }
 
     public void showGui() {
         this.pack();
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
-            Thread.currentThread().interrupt();
-        }
+        Helpers.wait(500);
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -65,31 +68,32 @@ public class View extends JFrame {
 
     private void initComponents() {
         this.featuresPanel = new FeaturesPanel(this);
+        this.featuresPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 2),
+                        "Herramientas exploradores"),
+                BorderFactory.createEmptyBorder(10, 5, 15, 5)));
+        this.featuresPanel.setBackground(Color.WHITE);
         this.options = new OptionsPanel(INITIAL_SIZE, this);
+        this.options.setBackground(Color.WHITE);
 
         this.add(this.options, BorderLayout.WEST);
 
         JPanel aux = new JPanel();
+        aux.setBackground(Color.WHITE);
         aux.setLayout(new BoxLayout(aux, BoxLayout.Y_AXIS));
         aux.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 2, 0, 0, Color.BLACK),
                 BorderFactory.createEmptyBorder(15, 15, 15, 15)));
         JPanel aux2 = this.options.initExplorerSelector();
-
-        // print the sizes
-        System.out.println("aux: " + aux.getPreferredSize());
-        System.out.println("aux2: " + aux2.getPreferredSize());
-        System.out.println("featuresPanel: " + this.featuresPanel.getPreferredSize());
+        aux2.setBackground(Color.WHITE);
 
         aux.add(this.featuresPanel);
         aux.add(aux2);
-        // Reduce the panel 20 pixels in width and height
         aux.setPreferredSize(new Dimension(aux.getPreferredSize().width - 80, aux.getPreferredSize().height));
 
         this.add(aux, BorderLayout.EAST);
 
         this.addNewCave(INITIAL_SIZE);
-
     }
 
     public void setInfo(CaveInfo info) {
@@ -176,7 +180,7 @@ public class View extends JFrame {
                     }
 
                 } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                    FileLogger.info(ex.getMessage());
                     Thread.currentThread().interrupt();
                 }
             }

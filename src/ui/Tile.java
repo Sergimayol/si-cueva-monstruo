@@ -13,7 +13,7 @@ import ui.entities.CaveEditor;
 /*
 Classe que controla el funcionament d'una casella
  */
-public class Tile extends JComponent implements Serializable {
+public class Tile extends JComponent {
 
     // Variables estaticas
     public static final String backgroundImagePath = "./assets/images/caveTile.png";

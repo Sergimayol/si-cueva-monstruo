@@ -29,6 +29,7 @@ public class Result extends JDialog {
         this.setLayout(new BorderLayout());
 
         JPanel content = new JPanel();
+        content.setBackground(Color.WHITE);
         content.setBorder(BorderFactory.createEmptyBorder(15, 15, 30, 15));
         content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
 
@@ -39,6 +40,7 @@ public class Result extends JDialog {
             Explorer explorer = explorers[i];
 
             JPanel explorerResult = new JPanel();
+            explorerResult.setBackground(Color.WHITE);
             explorerResult.setLayout(new BoxLayout(explorerResult, BoxLayout.Y_AXIS));
 
             int id = explorer.getId();
@@ -49,6 +51,7 @@ public class Result extends JDialog {
             explorerResult.add(label);
 
             JPanel aux = new JPanel();
+            aux.setBackground(Color.WHITE);
             aux.setLayout(new BoxLayout(aux, BoxLayout.X_AXIS));
 
             final String treasuresTaken = explorer.getTreasuresTaken();
@@ -71,15 +74,11 @@ public class Result extends JDialog {
             if (i < explorers.length - 1) {
                 content.add(Box.createRigidArea(new Dimension(25, 1)));
             }
-
         }
 
         this.add(content);
-
         this.pack();
-
         this.setLocationRelativeTo(gui);
-
     }
 
     public void showResults() {

@@ -54,6 +54,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     // Constructor del tauler
     public Cave(int n, View gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
+        this.setBackground(Color.WHITE);
         this.gui = gui;
         this.env = env;
         this.costat = n;
@@ -89,6 +90,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     // Constructor del tauler
     public Cave(Tile[][] tiles, View gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
+        this.setBackground(Color.WHITE);
         this.gui = gui;
         this.env = env;
         this.costat = tiles.length;
@@ -184,7 +186,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        String text = "Tesoros restantes: " + this.treasuresRemaining;
+        String text = "Cofres restantes: " + this.treasuresRemaining;
         int x = (int) (this.getWidth() * 0.8);
         int y = (int) ((this.dimsBorde / 2) * 0.6);
         g2.setColor(Color.black);
@@ -197,7 +199,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
         if (this.caveBlocked) {
 
-            text = "Bloqueado";
+            text = "En ejecución...";
             x = this.getWidth() / 2;
             y = (int) ((this.dimsBorde / 2) * 0.6);
             g2.setColor(Color.red);

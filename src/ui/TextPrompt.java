@@ -7,17 +7,8 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
-/**
- * The TextPrompt class will display a prompt over top of a text component when
- * the Document of the text field is empty. The Show property is used to
- * determine the visibility of the prompt.
- *
- * The Font and foreground Color of the prompt will default to those properties
- * of the parent text component. You are free to change the properties after
- * class construction.
- */
-public class TextPrompt extends JLabel
-		implements FocusListener, DocumentListener {
+public class TextPrompt extends JLabel implements FocusListener, DocumentListener {
+
 	public enum Show {
 		ALWAYS,
 		FOCUS_GAINED,
@@ -25,7 +16,7 @@ public class TextPrompt extends JLabel
 	}
 
 	private JTextComponent component;
-	private Document document;
+	private transient Document document;
 
 	private Show show;
 	private boolean showPromptOnce;
@@ -44,7 +35,7 @@ public class TextPrompt extends JLabel
 		setFont(component.getFont());
 		setForeground(component.getForeground());
 		setBorder(new EmptyBorder(component.getInsets()));
-		setHorizontalAlignment(JLabel.LEADING);
+		setHorizontalAlignment(SwingConstants.LEADING);
 
 		component.addFocusListener(this);
 		document.addDocumentListener(this);
