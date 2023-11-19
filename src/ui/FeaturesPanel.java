@@ -4,12 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,41 +23,36 @@ public class FeaturesPanel extends JPanel {
 
     JCheckBox bridgeCheck;
 
-    public FeaturesPanel(ViewContent gui) {
+    public FeaturesPanel(View gui) {
 
-        this.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(2, 0, 0, 0, Color.black),
-                BorderFactory.createEmptyBorder(15, 15, 15, 15)));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-        JLabel title = new JLabel("Habilidades");
+        JLabel title = new JLabel("Exploradores");
         title.setFont(new Font("Calibri", Font.BOLD, 24));
-        title.setAlignmentX(Component.LEFT_ALIGNMENT);
-        title.setVerticalAlignment(JLabel.CENTER);
-        this.add(title);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setVerticalAlignment(SwingConstants.CENTER);
 
-        this.add(Box.createRigidArea(new Dimension(25, 1)));
+        contentPanel.add(title);
 
         JPanel arrowsPanel = new JPanel();
         arrowsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         arrowsPanel.setLayout(new BoxLayout(arrowsPanel, BoxLayout.X_AXIS));
 
-        this.arrowsCheck = new JCheckBox("Flechas", true);
+        this.arrowsCheck = new JCheckBox("Pistola", true);
         this.arrowsCheck.setFont(font);
         this.arrowsCheck.setVerticalTextPosition(SwingConstants.TOP);
 
-        this.arrowsCheck.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JCheckBox check = (JCheckBox) e.getSource();
-                gui.setExplorersCanShoot(check.isSelected());
-            }
+        this.arrowsCheck.addActionListener(e -> {
+            JCheckBox check = (JCheckBox) e.getSource();
+            gui.setExplorersCanShoot(check.isSelected());
         });
 
         arrowsPanel.add(arrowsCheck);
 
-        arrowsPanel.add(new JLabel("", Helpers.escalateImageIcon("./assets/images/arrow.png", iconSize, iconSize),
+        arrowsPanel.add(new JLabel("", Helpers.escalateImageIcon("./assets/images/gun.png", iconSize, iconSize),
                 SwingConstants.LEFT));
 
         JPanel bridgePanel = new JPanel();
@@ -79,11 +71,13 @@ public class FeaturesPanel extends JPanel {
         bridgePanel.add(new JLabel("", Helpers.escalateImageIcon("./assets/images/planks.png", iconSize, iconSize),
                 SwingConstants.LEFT));
 
-        this.add(arrowsPanel);
+        JPanel contentPanel2 = new JPanel();
+        contentPanel2.add(arrowsPanel);
+        contentPanel2.add(Box.createRigidArea(new Dimension(15, 1)));
+        contentPanel2.add(bridgePanel);
 
-        this.add(Box.createRigidArea(new Dimension(15, 1)));
-
-        this.add(bridgePanel);
+        this.add(contentPanel);
+        this.add(contentPanel2);
 
     }
 

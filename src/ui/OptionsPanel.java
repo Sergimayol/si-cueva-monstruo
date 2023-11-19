@@ -32,7 +32,6 @@ import javax.swing.SwingConstants;
 public class OptionsPanel extends JPanel {
 
     private final int DIM_ICON = 60;
-    private final int DIM_ROBOT = 120;
     private final int ANCHO = 250;
     private final int ALTO = 20;
     private static final Font titleFont = new Font("Calibri", Font.BOLD, 16);
@@ -43,7 +42,7 @@ public class OptionsPanel extends JPanel {
     private final String baseImagesPath = "./assets/images/";
     private final String extension = ".png";
 
-    private final ViewContent gui;
+    private final View gui;
     private JSlider speedSlider;
     private JSlider nExplorersSlider;
     private int currentSelectedEntityIndex = 0;
@@ -57,11 +56,9 @@ public class OptionsPanel extends JPanel {
 
     private ButtonGroup groupbtn;
 
-    private ArrayList<JButton> botones = new ArrayList<>();
     private JFormattedTextField inputDimsTablero;
-    private int dimsTableroPrevias;
 
-    public OptionsPanel(int n, ViewContent gui) {
+    public OptionsPanel(int n, View gui) {
         try {
             this.entitiesClass = new Class[] {
                     Class.forName("ui.entities.Hole"),
@@ -93,8 +90,6 @@ public class OptionsPanel extends JPanel {
         this.initComponents();
 
         inputDimsTablero.setText(Integer.toString(n));
-        dimsTableroPrevias = n;
-
     }
 
     public Class<?>[] getEntityClasses() {
@@ -216,7 +211,7 @@ public class OptionsPanel extends JPanel {
         return panelEntrada;
     }
 
-    private void initExplorerSelector() {
+    public JPanel initExplorerSelector() {
         JPanel panelExplorers = new JPanel();
 
         ActionListener buttonAction = getControlActionListener();
@@ -225,9 +220,7 @@ public class OptionsPanel extends JPanel {
 
         panelExplorers.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder(
-                                BorderFactory.createLineBorder(Color.black, 2),
-                                "Controlador de exploradores"),
+                        BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 2), "Controlador"),
                         BorderFactory.createEmptyBorder(10, 5, 15, 5)));
         panelExplorers.setLayout(new BoxLayout(panelExplorers, BoxLayout.Y_AXIS));
 
@@ -346,7 +339,7 @@ public class OptionsPanel extends JPanel {
         };
 
         nExplorersSlider.setValue(1);
-        nExplorersSlider.setOrientation(SwingConstants.VERTICAL);
+        nExplorersSlider.setOrientation(SwingConstants.HORIZONTAL);
 
         nExplorersSlider.setPaintLabels(true);
         nExplorersSlider.setPaintTicks(true);
@@ -355,13 +348,13 @@ public class OptionsPanel extends JPanel {
 
         Hashtable<Integer, JLabel> labels = new Hashtable<>();
         JLabel label1 = new JLabel("1");
-        label1.setIcon(new ImageIcon("./assets/images/agents/explorer1_left.png"));
+        label1.setIcon(new ImageIcon("./assets/explorer/1.png"));
         JLabel label2 = new JLabel("2");
-        label2.setIcon(new ImageIcon("./assets/images/agents/explorer2_left.png"));
+        label2.setIcon(new ImageIcon("./assets/explorer/2.png"));
         JLabel label3 = new JLabel("3");
-        label3.setIcon(new ImageIcon("./assets/images/agents/explorer3_left.png"));
+        label3.setIcon(new ImageIcon("./assets/explorer/3.png"));
         JLabel label4 = new JLabel("4");
-        label4.setIcon(new ImageIcon("./assets/images/agents/explorer4_left.png"));
+        label4.setIcon(new ImageIcon("./assets/explorer/4.png"));
         labels.put(Integer.valueOf(1), label1);
         labels.put(Integer.valueOf(2), label2);
         labels.put(Integer.valueOf(3), label3);
@@ -375,8 +368,6 @@ public class OptionsPanel extends JPanel {
             }
         });
 
-        panelExplorers.add(Box.createRigidArea(new Dimension(1, 10)));
-
         sliderPanel.add(nExplorersSlider);
         explorersPanel.add(sliderPanel);
         panelExplorers.add(explorersPanel);
@@ -384,7 +375,8 @@ public class OptionsPanel extends JPanel {
         // ----------------------------------------------------------------------
         panelExplorers.add(Box.createVerticalGlue());
 
-        this.add(panelExplorers);
+        // this.add(panelExplorers);
+        return panelExplorers;
     }
 
     private JLabel CrearEtiq(String str) {
@@ -473,7 +465,6 @@ public class OptionsPanel extends JPanel {
         if (!text.equals("")) {
             int n = Integer.parseInt(text);
             if (n > 0) {
-                this.dimsTableroPrevias = n;
                 parar();
                 this.resetFirstStep();
                 this.gui.addNewCave(n);

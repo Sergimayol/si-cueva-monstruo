@@ -67,7 +67,6 @@ public class Tile extends JComponent implements Serializable {
 
             g2.drawImage(backgroundImage, x, y, costat, costat, null);
 
-            // g2.fill3DRect(x, y, costat, costat, true);
             g2.setStroke(new BasicStroke(2));
             g2.setColor(Color.BLACK);
             g2.drawRect(x, y, costat, costat);

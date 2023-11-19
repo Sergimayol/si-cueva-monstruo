@@ -1,7 +1,8 @@
 package environment;
 
 import agent.Explorer;
-import ui.ViewContent;
+import ui.View;
+import ui.View;
 import ui.entities.CaveEditor;
 
 import java.awt.Point;
@@ -12,8 +13,8 @@ public class Environment<T> implements Serializable {
 
     private TileData[][] map;
     private TileData[][] snapMap;
-    private T[] agents;
-    private ViewContent gui;
+    private transient T[] agents;
+    private View gui;
     private boolean[] agentsFinished;
     private static Point[] initialAgentsPosBase = {
             new Point(1, 0),
@@ -29,8 +30,7 @@ public class Environment<T> implements Serializable {
         this.initialAgentsPos = null;
     }
 
-    @SuppressWarnings("unchecked")
-    public Environment(int n, int nAgents, ViewContent gui) {
+    public Environment(int n, int nAgents, View gui) {
         this.map = new TileData[n][n];
         this.gui = gui;
 
@@ -43,8 +43,7 @@ public class Environment<T> implements Serializable {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Environment(TileData[][] map, int nAgents, ViewContent gui) {
+    public Environment(TileData[][] map, int nAgents, View gui) {
         this.gui = gui;
         this.map = map;
 
@@ -73,6 +72,7 @@ public class Environment<T> implements Serializable {
         return this.snapMap;
     }
 
+    @SuppressWarnings("unchecked")
     public void setNumberOfAgents(int nAgents) {
 
         initialAgentsPos = new Point[nAgents];
@@ -84,20 +84,8 @@ public class Environment<T> implements Serializable {
         this.agentsFinished = new boolean[nAgents];
     }
 
-    public boolean isObstacle(int i, int j) {
-        return true; // this.map[i][j].is();
-    }
-
     public TileData getIsObstacleReference(int i, int j) {
         return this.map[i][j];
-    }
-
-    public void setObstacle(int i, int j, boolean value) {
-        // this.map[i][j].setValue(value);
-    }
-
-    public void toggleObstacle(int i, int j) {
-        // this.map[i][j].toggle();
     }
 
     public void setAgents(T[] agents) {
@@ -124,7 +112,6 @@ public class Environment<T> implements Serializable {
         this.initialAgentsPos = initialPos;
     }
 
-    @SuppressWarnings("unchecked")
     public void runIteration() {
         for (int i = 0; i < agents.length; i++) {
             Explorer agent = (Explorer) agents[i];
@@ -185,6 +172,7 @@ public class Environment<T> implements Serializable {
             try {
                 this.map[monsterPos.x + p[0]][monsterPos.y + p[1]].removeHedor();
             } catch (ArrayIndexOutOfBoundsException ex) {
+                // Do nothing
             }
         }
 
@@ -201,6 +189,7 @@ public class Environment<T> implements Serializable {
             try {
                 this.map[holePos.x + p[0]][holePos.y + p[1]].removeBreeze();
             } catch (ArrayIndexOutOfBoundsException ex) {
+                // Do nothing
             }
         }
 

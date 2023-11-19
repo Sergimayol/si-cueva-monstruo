@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,36 +18,15 @@ import utils.MutableBoolean;
 
 public class ExplorerDisplayer extends JComponent {
 
-    class Timer {
-
-        private static final ScheduledExecutorService scheduledThreadPoolExecutor = Executors
-                .newScheduledThreadPool(10);
-
-        private static void doPause(int ms) {
-            try {
-                scheduledThreadPoolExecutor.schedule(() -> {
-                }, ms, TimeUnit.MILLISECONDS).get();
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
-        }
-    }
-
     private final int sleep_millis = 10;
-    private final int spriteChangeIterations = 35;
-    private int iterationCounter = 0;
-    private boolean walking = false;
-    // private final int animation_time = 1000;
     private int sizeFactor = 1;
     private final int sizeFactorDivider = 50;
     private double speedFactor = 1.0f;
-    private final Explorer explorer;
+    private final transient Explorer explorer;
     private final int baseIncMovement = 2;
     private final int baseIncAngle = 6;
     private int prevPosX;
     private int prevPosY;
-    private final BufferedImage imageLeft;
-    private final BufferedImage imageRight;
     private BufferedImage image;
     private Point position;
     private MutableBoolean active;
@@ -57,19 +37,16 @@ public class ExplorerDisplayer extends JComponent {
     private boolean isInAnimation = false;
     private int initialI;
     private int initialJ;
-    private final int id;
     private int totalTiles;
+    private boolean applyRotation = false;
 
     public ExplorerDisplayer(Explorer explorer, int id) {
         this.explorer = explorer;
-        this.id = id;
         this.position = new Point(-1, -1);
         this.prevPosX = this.position.x;
         this.prevPosY = this.position.y;
         this.active = new MutableBoolean(false);
-        this.imageLeft = Helpers.readImage("./assets/images/agents/explorer" + (id + 1) + "_left.png");
-        this.imageRight = Helpers.readImage("./assets/images/agents/explorer" + (id + 1) + "_right.png");
-        this.image = imageLeft;
+        this.image = Helpers.readImage("./assets/explorer/" + (id + 1) + ".png");
     }
 
     public boolean isActive() {
@@ -84,13 +61,11 @@ public class ExplorerDisplayer extends JComponent {
         return this.active;
     }
 
-    public BufferedImage getImageLeft() {
-        return this.imageLeft;
+    public BufferedImage getImage() {
+        return this.image;
     }
 
     public void setInitialTile(int i, int j, int costat, int borde, int totalTiles) {
-        // System.out.println(i + ", " + j);
-        // this.robot.setDisplacement(i, j);
         this.initialI = i;
         this.initialJ = j;
         this.width = (int) (costat * 0.9);
@@ -99,7 +74,7 @@ public class ExplorerDisplayer extends JComponent {
         this.prevPosY = j;
         this.costat = costat;
         this.borde = borde;
-        this.rotationAngle = i == 0 ? 180 : 0;
+        this.rotationAngle = 0;
         this.totalTiles = totalTiles;
 
         this.sizeFactor = (this.costat / sizeFactorDivider);
@@ -156,29 +131,17 @@ public class ExplorerDisplayer extends JComponent {
         int currentIncX = (int) (this.speedFactor * Math.max(this.sizeFactor, 1) * baseIncMovement * multiplierX);
         int currentIncY = (int) (this.speedFactor * Math.max(this.sizeFactor, 1) * baseIncMovement * multiplierY);
 
-        this.rotate(kitchen, explorerXPos, explorerYPos);
+        if (this.applyRotation) {
+            this.rotate(kitchen, explorerXPos, explorerYPos);
+        }
 
         this.prevPosX = explorerXPos;
         this.prevPosY = explorerYPos;
 
         if (explorerXPos < 0 || explorerXPos >= totalTiles || explorerYPos < 0 || explorerYPos >= totalTiles) {
-
-            Point savedPos;
-            for (int i = 0; i < 10; i++) {
-                savedPos = new Point(this.position.x, this.position.y);
-                this.position.x += (Math.random() * 2 - 1) * this.width / 4;
-                this.position.y += (Math.random() * 2 - 1) * this.width / 4;
-                kitchen.repaintExplorersAndTiles();
-                Timer.doPause(sleep_millis);
-                this.position = savedPos;
-            }
-
             kitchen.repaintExplorersAndTiles();
-
             return;
         }
-
-        this.walking = true;
 
         while (this.position.x != explorerCoordinates.x
                 || this.position.y != explorerCoordinates.y) {
@@ -201,16 +164,9 @@ public class ExplorerDisplayer extends JComponent {
 
             Timer.doPause(sleep_millis);
 
-            // if(this.position.x < 0 || this.position.x >= (this.totalWidth -
-            // (int)(this.width*0.75)) || this.position.y < 0 || this.position.y >=
-            // (this.totalWidth - (int)(this.width*0.75))){
-            // break;
-            // }
-
             kitchen.repaintExplorersAndTiles();
 
         }
-        this.walking = false;
     }
 
     private void rotate(Cave kitchen, int targetPosX, int targetPosY) {
@@ -276,27 +232,10 @@ public class ExplorerDisplayer extends JComponent {
 
     }
 
-    private void toggleSprite() {
-        if (this.image == this.imageLeft) {
-            this.image = this.imageRight;
-        } else {
-            this.image = this.imageLeft;
-        }
-    }
-
     @Override
     public void paintComponent(Graphics g1) {
-        // super.paintComponent(g1);
         Graphics2D g = (Graphics2D) g1;
         g.setColor(Color.red);
-
-        if (this.walking) {
-            if (iterationCounter++ % spriteChangeIterations == 0) {
-                this.toggleSprite();
-            }
-        } else {
-            this.iterationCounter = 0;
-        }
 
         // Draw rotated image
         AffineTransform backup = g.getTransform();
@@ -311,4 +250,22 @@ public class ExplorerDisplayer extends JComponent {
         g.setTransform(backup);
     }
 
+    private class Timer {
+
+        private Timer() {
+            throw new IllegalStateException("Utility class");
+        }
+
+        private static final ScheduledExecutorService scheduledThreadPoolExecutor = Executors
+                .newScheduledThreadPool(10);
+
+        private static void doPause(int ms) {
+            try {
+                scheduledThreadPoolExecutor.schedule(() -> {
+                }, ms, TimeUnit.MILLISECONDS).get();
+            } catch (ExecutionException | InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 }

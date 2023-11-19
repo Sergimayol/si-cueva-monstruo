@@ -12,6 +12,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -33,27 +34,25 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
     // Atributs propis del tauler
     private Tile[][] tiles;
-    private Color colorBorde = new Color(200, 200, 200);
     private int costat;
     private int costatCasella;
-    private final int dimsBordeBase = 40;
+    private static final int dimsBordeBase = 40;
     private int dimsBorde = dimsBordeBase;
-    private int pixelsCostat = 800;
+    private int pixelsCostat = 800 - (4 * dimsBorde);
     private Dimension dimensions = new Dimension(pixelsCostat + (2 * dimsBorde) + 1,
             pixelsCostat + (2 * dimsBorde) + 1);
     private int buttonPressed = -1;
     private ExplorerDisplayer[] explorerDisplayers;
-    private BufferedImage starterImage = null;
-    private Graphics2D gAux = null;
-    private BufferedImage biAux = null;
-    private ViewContent gui;
+    private transient BufferedImage starterImage = null;
+    private transient Graphics2D gAux = null;
+    private View gui;
     private Environment<Explorer> env;
     private boolean explorersActive = false;
     private boolean caveBlocked = false;
     private int treasuresRemaining = 0;
 
     // Constructor del tauler
-    public Cave(int n, ViewContent gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
+    public Cave(int n, View gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
         this.gui = gui;
         this.env = env;
@@ -88,8 +87,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     // Constructor del tauler
-    public Cave(Tile[][] tiles, ViewContent gui, Environment<Explorer> env,
-            ExplorerDisplayer[] explorerDisplayers) {
+    public Cave(Tile[][] tiles, View gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
         this.gui = gui;
         this.env = env;
@@ -163,12 +161,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         if (starterImage == null) {
             starterImage = new BufferedImage(dimensions.width, dimensions.height, BufferedImage.TYPE_INT_ARGB);
             gAux = (Graphics2D) starterImage.getGraphics();
-            gAux.setColor(colorBorde);
-            gAux.drawRect(dimsBorde - 1, dimsBorde - 1, dimensions.width - (dimsBorde * 2) + 1,
-                    dimensions.height - (dimsBorde * 2) + 1);
-            gAux.drawRect(dimsBorde - 2, dimsBorde - 2, dimensions.width - (dimsBorde * 2) + 3,
-                    dimensions.height - (dimsBorde * 2) + 3);
-
         }
 
         for (int i = 0; i < costat; i++) {
@@ -177,7 +169,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             }
         }
 
-        biAux = clone(starterImage);
+        BufferedImage biAux = clone(starterImage);
         Graphics2D gbiAux = (Graphics2D) biAux.getGraphics();
 
         for (ExplorerDisplayer expDisplayer : this.explorerDisplayers) {
@@ -369,11 +361,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 tiles[i][j].notifyChange();
-
-                // TODO: if not works is for this CHECK
-                // if (tiles[i][j].hasEntity()) {
-                // tiles[i][j].setEntity(true);
-                // }
             }
         }
         this.repaint();
