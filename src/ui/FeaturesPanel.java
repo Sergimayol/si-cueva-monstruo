@@ -38,7 +38,7 @@ public class FeaturesPanel extends JPanel {
         contentPanel.add(title);
 
         JPanel arrowsPanel = new JPanel();
-        arrowsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        arrowsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         arrowsPanel.setLayout(new BoxLayout(arrowsPanel, BoxLayout.X_AXIS));
 
         this.arrowsCheck = new JCheckBox("Pistola", true);
@@ -49,14 +49,11 @@ public class FeaturesPanel extends JPanel {
             JCheckBox check = (JCheckBox) e.getSource();
             gui.setExplorersCanShoot(check.isSelected());
         });
-
-        arrowsPanel.add(arrowsCheck);
-
-        arrowsPanel.add(new JLabel("", Helpers.escalateImageIcon("./assets/images/gun.png", iconSize, iconSize),
-                SwingConstants.LEFT));
+        JLabel arrowsIcon = new JLabel("", Helpers.escalateImageIcon("./assets/images/gun.png", iconSize, iconSize),
+                SwingConstants.LEFT);
 
         JPanel bridgePanel = new JPanel();
-        bridgePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        bridgePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         bridgePanel.setLayout(new BoxLayout(bridgePanel, BoxLayout.X_AXIS));
 
         this.bridgeCheck = new JCheckBox("Tablones", true);
@@ -66,10 +63,15 @@ public class FeaturesPanel extends JPanel {
             gui.setExplorersCanPutBridge(check.isSelected());
         });
 
-        bridgePanel.add(bridgeCheck);
+        JLabel bridgeIcon = new JLabel("", Helpers.escalateImageIcon("./assets/images/planks.png", iconSize, iconSize),
+                SwingConstants.LEFT);
 
-        bridgePanel.add(new JLabel("", Helpers.escalateImageIcon("./assets/images/planks.png", iconSize, iconSize),
-                SwingConstants.LEFT));
+        // Arrows
+        arrowsPanel.add(arrowsCheck);
+        arrowsPanel.add(arrowsIcon);
+        // Bridge
+        bridgePanel.add(bridgeCheck);
+        bridgePanel.add(bridgeIcon);
 
         JPanel contentPanel2 = new JPanel();
         contentPanel2.add(arrowsPanel);
