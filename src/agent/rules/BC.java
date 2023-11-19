@@ -1,30 +1,29 @@
 package agent.rules;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import agent.ExplorerMem;
-import agent.labels.CharacteristicLabels;
-import env.TileInfo;
+import agent.ExplorerMap;
+import agent.labels.Labels;
+import environment.TileInfo;
 
 import java.awt.Point;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class BC<T> {
 
     private LinkedList<Rule<T>> contentRules;
-    private ExplorerMem facts;
+    private ExplorerMap facts;
     private int minTimesVisited;
     private int minIndex;
 
     public BC() {
         this.contentRules = new LinkedList<>();
-        this.facts = new ExplorerMem();
+        this.facts = new ExplorerMap();
     }
 
     public BC(List<Rule<T>> contentRules) {
         this.contentRules = new LinkedList<>(contentRules);
-        this.facts = new ExplorerMem();
+        this.facts = new ExplorerMap();
     }
 
     public void addProdRule(Rule<T> rule) {
@@ -41,12 +40,15 @@ public class BC<T> {
 
     public T getAction() {
         Iterator<Rule<T>> it = contentRules.iterator();
+
         while (it.hasNext()) {
             Rule<T> rule = it.next();
             if (rule.eval()) {
                 return rule.getAction();
             }
+
         }
+
         return null;
     }
 
@@ -56,14 +58,16 @@ public class BC<T> {
         TileInfo[] adjacentTiles = this.getTiles(this.getAdjacentPoints(p));
         for (int i = 0; i < adjacentTiles.length; i++) {
             this.infer(facts.getTile(p), i, adjacentTiles, characteristics);
-            characteristics[CharacteristicLabels.PRIO_NORTH.ordinal() + i].setValue(false);
+            characteristics[Labels.PRIO_NORTH.ordinal() + i].setValue(
+                    false);
         }
 
         if (minIndex < 0) {
             return this;
         }
 
-        characteristics[CharacteristicLabels.PRIO_NORTH.ordinal() + minIndex].setValue(true);
+        characteristics[Labels.PRIO_NORTH.ordinal() + minIndex].setValue(
+                true);
 
         return this;
     }
@@ -153,10 +157,11 @@ public class BC<T> {
         }
 
         // TIENE MONSTRUO EN X -> DISPARAR HACIA X
-        characteristics[CharacteristicLabels.SHOOT_NORTH.ordinal() + currentIndex].setValue(adj.hasMonster());
+        characteristics[Labels.SHOOT_NORTH.ordinal() + currentIndex].setValue(adj.hasMonster());
 
         // TIENE AGUJERO EN X -> PUENTE EN X
-        characteristics[CharacteristicLabels.BRIDGE_NORTH.ordinal() + currentIndex].setValue(adj.hasHole());
+        characteristics[Labels.BRIDGE_NORTH.ordinal() + currentIndex].setValue(adj.hasHole());
+
     }
 
     public List<Rule<T>> getContentRules() {
@@ -165,22 +170,25 @@ public class BC<T> {
 
     public String toStringEvaluated() {
         Iterator<Rule<T>> it = contentRules.iterator();
-        StringBuilder str = new StringBuilder();
+        String str = "";
+
         while (it.hasNext()) {
             Rule<T> rule = it.next();
-            str.append(rule.toString()).append(": ").append(rule.eval()).append("\n");
+            str += rule.toString() + ": " + rule.eval() + "\n";
         }
-        return str.toString();
+        return str;
+
     }
 
     @Override
     public String toString() {
         Iterator<Rule<T>> it = contentRules.iterator();
-        StringBuilder str = new StringBuilder();
+        String str = "";
+
         while (it.hasNext()) {
-            str.append(it.next().toString()).append("\n");
+            str += it.next().toString() + "\n";
         }
-        return str.toString();
+        return str;
     }
 
     private Point[] getAdjacentPoints(Point p) {
@@ -200,7 +208,7 @@ public class BC<T> {
         return tiles;
     }
 
-    public ExplorerMem getMap() {
+    public ExplorerMap getMap() {
         return this.facts;
     }
 

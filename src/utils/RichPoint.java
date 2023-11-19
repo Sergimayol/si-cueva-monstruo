@@ -8,11 +8,10 @@ public class RichPoint implements Comparable<RichPoint> {
     public int y;
     public RichPoint previous;
 
-    public boolean visible = true; // variable auxiliar
+    public boolean visible = true;
 
-    // Per calcular la f = g+h
-    public int distanceFromOrigin = Integer.MAX_VALUE; // és la g de la funció d'avaluació
-    public double distanceToEnd = Integer.MAX_VALUE; // és la h de la funció d'avaluació
+    public int distanceFromOrigin = Integer.MAX_VALUE;
+    public double distanceToEnd = Integer.MAX_VALUE;
 
     public RichPoint() {
         super();
@@ -45,12 +44,12 @@ public class RichPoint implements Comparable<RichPoint> {
     }
 
     @Override
-    public boolean equals(Object other) { // per veure si dos punts són iguals
+    public boolean equals(Object other) {
         if (other == null)
             return false;
         if (!(other instanceof RichPoint))
             return false;
-        return (((RichPoint) other).x == this.x && ((RichPoint) other).y == this.y);
+        return ((RichPoint) other).x == this.x && ((RichPoint) other).y == this.y;
     }
 
     @Override
@@ -61,12 +60,13 @@ public class RichPoint implements Comparable<RichPoint> {
     public int compareTo(RichPoint punt2) {
         double distanciaTotalDesdeLObjectiu = distanceToEnd + distanceFromOrigin;
         double nodeDistanciaTotalDesdeLObjectiu = punt2.distanceToEnd + punt2.distanceFromOrigin;
+
         if (distanciaTotalDesdeLObjectiu < nodeDistanciaTotalDesdeLObjectiu) {
             return -1;
-        }
-        if (distanciaTotalDesdeLObjectiu > nodeDistanciaTotalDesdeLObjectiu) {
+        } else if (distanciaTotalDesdeLObjectiu > nodeDistanciaTotalDesdeLObjectiu) {
             return 1;
+        } else {
+            return 0;
         }
-        return 0;
     }
 }

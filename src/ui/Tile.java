@@ -1,132 +1,81 @@
 package ui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
+import javax.swing.JComponent;
 
-import javax.swing.JPanel;
+import ui.entities.CaveEditor;
 
-import agent.Explorer;
-import env.Environment;
-import utils.FileLogger;
+/*
+Classe que controla el funcionament d'una casella
+ */
+public class Tile extends JComponent {
 
-public class Tile extends JPanel {
+    // Variables estaticas
+    public static final String backgroundImagePath = "./assets/images/caveTile.png";
 
-    private transient BufferedImage image;
-    private transient BufferedImage robotImage;
-    private Color tileColor;
-    private Point position;
-    private boolean isObstacle;
-    private boolean isRobot;
-    private transient Environment<Explorer> environment;
+    // Constants de la casella
 
-    public Tile(int x, int y, BufferedImage image, BufferedImage robotImage, Color tileColor,
-            Environment<Explorer> environment) {
-        this.position = new Point(x, y);
-        this.image = image;
-        this.robotImage = robotImage;
-        this.tileColor = tileColor;
-        this.isObstacle = false;
-        this.isRobot = false;
-        this.environment = environment;
-        this.addMouseListener(createMouseListner());
+    // Atributs de la casella
+    private int x;
+    private int y;
+    private int costat;
+    private CaveEditor entity = null;
+    private boolean needsToBePainted = true;
+    private transient BufferedImage backgroundImage;
+
+    // Constructor de la casella
+    public Tile(int i, int j, int costat, int borde, BufferedImage backgroundImage) {
+        this.costat = costat;
+        this.x = j * this.costat + borde;
+        this.y = i * this.costat + borde;
+        this.backgroundImage = backgroundImage;
+
     }
 
-    public void setEnvironment(Environment<Explorer> environment) {
-        this.environment = environment;
+    public void setBackgroundImage(BufferedImage backgroundImage) {
+        this.backgroundImage = backgroundImage;
     }
 
-    public void setObstacle(boolean isObstacle) {
-        this.isObstacle = isObstacle;
+    public void setEntity(CaveEditor entity) {
+        this.entity = entity;
+
     }
 
-    public void setRobot(boolean isRobot) {
-        this.isRobot = isRobot;
+    public CaveEditor getEntity() {
+        return this.entity;
+
     }
 
-    public void setImage(BufferedImage image) {
-        this.image = image;
+    public boolean hasEntity() {
+        return this.entity != null;
     }
 
-    public Point getPosition() {
-        return this.position;
+    public void notifyChange() {
+        this.needsToBePainted = true;
     }
 
-    public boolean isObstacle() {
-        return this.isObstacle;
-    }
-
-    public boolean isRobot() {
-        return this.isRobot;
-    }
-
+    // Mètode que pinta una casella
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        final int width = this.getWidth();
-        final int height = this.getHeight();
-        this.setBackground(this.tileColor);
-        g2d.setColor(this.tileColor);
-        g2d.fillRect(0, 0, width, height);
-        if (this.isObstacle || this.isRobot) {
-            g2d.drawImage(this.isRobot ? this.robotImage : this.image, 0, 0, width, height, null);
+    public void paintComponent(Graphics g) {
+        if (needsToBePainted) {
+            Graphics2D g2 = (Graphics2D) g;
+
+            g2.drawImage(backgroundImage, x, y, costat, costat, null);
+
+            g2.setStroke(new BasicStroke(2));
+            g2.setColor(Color.BLACK);
+            g2.drawRect(x, y, costat, costat);
+
+            if (entity != null) {
+                entity.paintComponent(g2, x, y, costat);
+            }
+            needsToBePainted = false;
         }
-    }
-
-    private MouseListener createMouseListner() {
-        return new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                FileLogger.info("[TILE] Clicked on tile: " + Tile.this.position);
-                if (evt.getButton() == MouseEvent.BUTTON1) {
-                    Tile.this.isObstacle = !Tile.this.isObstacle;
-                    Tile.this.environment.setObstacleIn(Tile.this.position.x, Tile.this.position.y,
-                            Tile.this.isObstacle);
-                }
-                final Explorer robot = Tile.this.environment.getAgent();
-                if (evt.getButton() == MouseEvent.BUTTON3) {
-                    if (Tile.this.isRobot) {
-                        Tile.this.isRobot = false;
-                        robot.setDefaultPosition();
-                    } else if (robot.isDefaultPosition()) { // Only one robot
-                        Tile.this.isRobot = true;
-                        robot.move(Tile.this.position.x, Tile.this.position.y);
-                    }
-                    Tile.this.environment.setAgent(robot);
-                }
-                Tile.this.repaint();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // Do nothing
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // Do nothing
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // Do nothing
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Do nothing
-            }
-        };
-    }
-
-    @Override
-    public String toString() {
-        return "Tile [position=" + position + ", isObstacle=" + isObstacle + ", isRobot=" + isRobot + "]";
     }
 
 }

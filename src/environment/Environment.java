@@ -1,26 +1,26 @@
-package env;
+package environment;
+
+import agent.Explorer;
+import ui.View;
+import ui.View;
+import ui.entities.CaveEditor;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.Arrays;
 
-import agent.BaseAgent;
-import agent.Executable;
-import agent.Explorer;
-import utils.FileLogger;
-
-public class Environment<T extends BaseAgent<Executable>> {
+public class Environment<T> implements Serializable {
 
     private TileData[][] map;
     private TileData[][] snapMap;
-    private T[] agents;
-    private MonstersCaveGui gui;
+    private transient T[] agents;
+    private View gui;
     private boolean[] agentsFinished;
     private static Point[] initialAgentsPosBase = {
             new Point(1, 0),
             new Point(1, 1),
             new Point(0, 0),
-            new Point(0, 1)
-    };
+            new Point(0, 1), };
 
     private Point[] initialAgentsPos;
 
@@ -30,7 +30,7 @@ public class Environment<T extends BaseAgent<Executable>> {
         this.initialAgentsPos = null;
     }
 
-    public Environment(int n, int nAgents, MonstersCaveGui gui) {
+    public Environment(int n, int nAgents, View gui) {
         this.map = new TileData[n][n];
         this.gui = gui;
 
@@ -43,7 +43,7 @@ public class Environment<T extends BaseAgent<Executable>> {
         }
     }
 
-    public Environment(TileData[][] map, int nAgents, MonstersCaveGui gui) {
+    public Environment(TileData[][] map, int nAgents, View gui) {
         this.gui = gui;
         this.map = map;
 
@@ -80,19 +80,43 @@ public class Environment<T extends BaseAgent<Executable>> {
             initialAgentsPos[i] = this.scale(initialAgentsPosBase[i]);
         }
 
-        this.agents = (T[]) new BaseAgent[nAgents];
+        this.agents = (T[]) new Object[nAgents];
         this.agentsFinished = new boolean[nAgents];
     }
 
-    private Point scale(Point originalPoint) {
-        return new Point(originalPoint.x * (map.length - 1), originalPoint.y * (map.length - 1));
+    public TileData getIsObstacleReference(int i, int j) {
+        return this.map[i][j];
     }
 
-    public void runNextMovement() {
+    public void setAgents(T[] agents) {
+        this.agents = agents;
+    }
+
+    public T[] getAgents() {
+        return this.agents;
+    }
+
+    public T getAgent(int i) {
+        return this.agents[i];
+    }
+
+    public int getSize() {
+        return this.map.length;
+    }
+
+    public Point[] getInitialPos() {
+        return initialAgentsPos;
+    }
+
+    public void setInitialPos(Point[] initialPos) {
+        this.initialAgentsPos = initialPos;
+    }
+
+    public void runIteration() {
         for (int i = 0; i < agents.length; i++) {
             Explorer agent = (Explorer) agents[i];
             if (!agentsFinished[i]) {
-                agent.processInputSensors(getPerceptions(agent, initialAgentsPos[i]));
+                agent.processPerceptions(getPerceptions(agent, initialAgentsPos[i]));
                 agent.updateFacts(agent.getDisplacement());
                 agent.inferBC(agent.getDisplacement());
                 agent.checkBC().execute(agent);
@@ -115,6 +139,20 @@ public class Environment<T extends BaseAgent<Executable>> {
                 this.gui.thereAreTreasures() };
     }
 
+    public TileData[][] getMap() {
+        return this.map;
+    }
+
+    public int getNAgents() {
+        return this.agents.length;
+    }
+
+    private Point scale(Point originalPoint) {
+        return new Point(
+                originalPoint.x * (map.length - 1),
+                originalPoint.y * (map.length - 1));
+    }
+
     public void getTreasure(int id) {
         Point displacement = ((Explorer) this.agents[id]).getDisplacement();
         Point basePos = this.initialAgentsPos[id];
@@ -134,6 +172,7 @@ public class Environment<T extends BaseAgent<Executable>> {
             try {
                 this.map[monsterPos.x + p[0]][monsterPos.y + p[1]].removeHedor();
             } catch (ArrayIndexOutOfBoundsException ex) {
+                // Do nothing
             }
         }
 
@@ -150,6 +189,7 @@ public class Environment<T extends BaseAgent<Executable>> {
             try {
                 this.map[holePos.x + p[0]][holePos.y + p[1]].removeBreeze();
             } catch (ArrayIndexOutOfBoundsException ex) {
+                // Do nothing
             }
         }
 
@@ -171,5 +211,6 @@ public class Environment<T extends BaseAgent<Executable>> {
         }
 
         this.gui.finishRound();
+
     }
 }

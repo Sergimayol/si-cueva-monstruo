@@ -1,6 +1,12 @@
 package agent.labels;
 
-public enum CharacteristicLabels {
+// Characteristics labels
+// PRIO_NORTH,
+// PRIO_SOUTH,
+// PRIO_EAST,
+// PRIO_WEST,
+// ORDER: hedor, breeze, treasure, obstacle
+public enum Labels {
     HEDOR,
     NOT_HEDOR,
     BREEZE,

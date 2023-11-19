@@ -1,23 +1,21 @@
 package agent;
 
+import environment.Environment;
+import environment.TileInfo;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 import agent.labels.Action;
-import agent.labels.CharacteristicLabels;
+import agent.labels.Labels;
 import agent.rules.BC;
 import agent.rules.Characteristic;
-import env.Environment;
-import env.TileInfo;
-import utils.FileLogger;
 import utils.RichPoint;
 
-public class Explorer extends BaseAgent<Executable> {
+public class Explorer extends GridAgent<Executable<Explorer>> {
 
     private Point displacement;
     private boolean canShoot;
@@ -36,118 +34,86 @@ public class Explorer extends BaseAgent<Executable> {
         this.movemementsToHome = null;
         this.canPutBridge = canPutBridge;
         this.canShoot = canShoot;
-        this.initCharacteristics();
+
+        characteristics = new Characteristic[Labels.values().length];
+        for (int i = 0; i < characteristics.length; i++) {
+            characteristics[i] = new Characteristic(Labels.values()[i].name());
+        }
+
         this.move(0, 0);
+
         this.initBC();
     }
 
-    public Explorer(int id, Environment<Explorer> env) {
-        this(id, env, true, true);
+    public void setCanShoot(boolean canShoot) {
+        this.canShoot = canShoot;
     }
 
-    private void initCharacteristics() {
-        characteristics = new Characteristic[CharacteristicLabels.values().length];
-        for (int i = 0; i < characteristics.length; i++) {
-            characteristics[i] = new Characteristic(CharacteristicLabels.values()[i].name());
-        }
-        FileLogger.info("[ROBOT] Characteristics initialized, there are " + characteristics.length
-                + " characteristics");
+    public void setCanPutBridge(boolean canPutBridge) {
+        this.canPutBridge = canPutBridge;
     }
 
-    private void initBC() {
-        FileLogger.info("[ROBOT] Initializing BC...");
-        // RETURN HOME
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.NOT_TREASURES_REMAINING },
-                Action.RETURN_HOME);
-
-        // TAKE TREASURE
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.TREASURE },
-                Action.TAKE_TREASURE);
-
-        // SHOOT TO THE MONSTER
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_SHOOT,
-                CharacteristicLabels.SHOOT_NORTH },
-                Action.SHOOT_NORTH);
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_SHOOT,
-                CharacteristicLabels.SHOOT_SOUTH },
-                Action.SHOOT_SOUTH);
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_SHOOT,
-                CharacteristicLabels.SHOOT_EAST },
-                Action.SHOOT_EAST);
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_SHOOT,
-                CharacteristicLabels.SHOOT_WEST },
-                Action.SHOOT_WEST);
-
-        // PUT BRIDGE
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_PUT_BRIDGE,
-                CharacteristicLabels.BRIDGE_NORTH },
-                Action.BRIDGE_NORTH);
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_PUT_BRIDGE,
-                CharacteristicLabels.BRIDGE_SOUTH },
-                Action.BRIDGE_SOUTH);
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_PUT_BRIDGE,
-                CharacteristicLabels.BRIDGE_EAST },
-                Action.BRIDGE_EAST);
-        this.addRule(new CharacteristicLabels[] {
-                CharacteristicLabels.CAN_PUT_BRIDGE,
-                CharacteristicLabels.BRIDGE_WEST },
-                Action.BRIDGE_WEST);
-
-        // MOVE WITHOUT PRIORITY
-        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.PRIO_NORTH }, Action.MOVE_NORTH);
-        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.PRIO_SOUTH }, Action.MOVE_SOUTH);
-        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.PRIO_EAST }, Action.MOVE_EAST);
-        this.addRule(new CharacteristicLabels[] { CharacteristicLabels.PRIO_WEST }, Action.MOVE_WEST);
-
-        // Default action
-        this.addRule(new CharacteristicLabels[] {}, Action.NOT_MOVE);
-        FileLogger.info("[ROBOT] BC initialized");
+    public List<RichPoint> getMovemementsToHome() {
+        return movemementsToHome;
     }
 
-    @Override
-    public void processInputSensors(boolean[] sensors) {
-        FileLogger.info("[ROBOT] Processing input sensors... (" + Arrays.toString(sensors) + ")");
-        for (int i = 0; i < sensors.length; i++) {
-            characteristics[i * 2].setValue(sensors[i]);
-            characteristics[(i * 2) + 1].setValue(!sensors[i]);
-        }
-
-        characteristics[CharacteristicLabels.CAN_SHOOT.ordinal()].setValue(this.canShoot);
-        characteristics[CharacteristicLabels.CAN_PUT_BRIDGE.ordinal()].setValue(this.canPutBridge);
-        FileLogger.info("[ROBOT] Input sensors processed, new characteristics are: "
-                + Arrays.toString(characteristics));
-    }
-
-    public void move(int x, int y) {
-        this.displacement.x += x;
-        this.displacement.y += y;
-        this.bc.visit(displacement);
-    }
-
-    public void setDefaultPosition() {
-        this.displacement.x = -1;
-        this.displacement.y = -1;
-    }
-
-    public boolean isDefaultPosition() {
-        return this.displacement.x == -1 && this.displacement.y == -1;
+    public void setMovemementsToHome(List<RichPoint> points) {
+        this.movemementsToHome = new ArrayList<>(points);
     }
 
     public int getId() {
         return this.id;
     }
 
+    private void initBC() {
+
+        // RETURN HOME
+        this.addProdRule(new int[] { Labels.NOT_TREASURES_REMAINING.ordinal() }, Action.RETURN_HOME);
+
+        // TAKE TREASURE
+        this.addProdRule(new int[] { Labels.TREASURE.ordinal() }, Action.TAKE_TREASURE);
+
+        // SHOOT TO THE MONSTER
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_NORTH.ordinal() },
+                Action.SHOOT_NORTH);
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_SOUTH.ordinal() },
+                Action.SHOOT_SOUTH);
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_EAST.ordinal() },
+                Action.SHOOT_EAST);
+        this.addProdRule(new int[] { Labels.CAN_SHOOT.ordinal(), Labels.SHOOT_WEST.ordinal() },
+                Action.SHOOT_WEST);
+
+        // PUT BRIDGE
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_NORTH.ordinal() },
+                Action.BRIDGE_NORTH);
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_SOUTH.ordinal() },
+                Action.BRIDGE_SOUTH);
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_EAST.ordinal() },
+                Action.BRIDGE_EAST);
+        this.addProdRule(new int[] { Labels.CAN_PUT_BRIDGE.ordinal(), Labels.BRIDGE_WEST.ordinal() },
+                Action.BRIDGE_WEST);
+
+        // MOVE WITHOUT PRIORITY
+        this.addProdRule(new int[] { Labels.PRIO_NORTH.ordinal() }, Action.MOVE_NORTH);
+        this.addProdRule(new int[] { Labels.PRIO_SOUTH.ordinal() }, Action.MOVE_SOUTH);
+        this.addProdRule(new int[] { Labels.PRIO_EAST.ordinal() }, Action.MOVE_EAST);
+        this.addProdRule(new int[] { Labels.PRIO_WEST.ordinal() }, Action.MOVE_WEST);
+
+        // DEFAULT ACTION (CAN'T MOVE)
+        this.addProdRule(new int[] {}, Action.NOT_MOVE);
+
+    }
+
     public Point getDisplacement() {
         return this.displacement;
+    }
+
+    public void move(int x, int y) {
+        this.displacement.x += x;
+        this.displacement.y += y;
+
+        this.bc.visit(displacement);
+
     }
 
     public void finished() {
@@ -155,7 +121,7 @@ public class Explorer extends BaseAgent<Executable> {
     }
 
     public void takeTreasure() {
-        this.treasures++;
+        treasures++;
         this.env.getTreasure(this.id);
     }
 
@@ -167,16 +133,21 @@ public class Explorer extends BaseAgent<Executable> {
         this.env.putBridge(this.id, new Point(x, y));
     }
 
-    public List<RichPoint> getMovemementsToHome() {
-        return this.movemementsToHome;
-    }
-
-    public void setMovemementsToHome(List<RichPoint> points) {
-        this.movemementsToHome = new ArrayList<>(points);
-    }
-
-    public ExplorerMem getMap() {
+    public ExplorerMap getMap() {
         return this.bc.getMap();
+    }
+
+    @Override
+    public void processPerceptions(boolean[] perceptions) {
+        // ORDER: hedor, breeze, treasure, obstacle
+
+        for (int i = 0; i < perceptions.length; i++) {
+            characteristics[i * 2].setValue(perceptions[i]);
+            characteristics[(i * 2) + 1].setValue(!perceptions[i]);
+        }
+
+        characteristics[Labels.CAN_SHOOT.ordinal()].setValue(this.canShoot);
+        characteristics[Labels.CAN_PUT_BRIDGE.ordinal()].setValue(this.canPutBridge);
     }
 
     public String getTreasuresTaken() {
@@ -197,6 +168,7 @@ public class Explorer extends BaseAgent<Executable> {
                 continue;
             }
             points.remove(i);
+
         }
 
         return points;
@@ -215,27 +187,37 @@ public class Explorer extends BaseAgent<Executable> {
         punt.distanceToEnd = Math.abs(punt.x - desti.x) + (double) Math.abs(punt.y - desti.y);
     }
 
-    public List<RichPoint> calculateActionsToHome(RichPoint origen, RichPoint desti) {
+    public List<RichPoint> calculateActionsToHome(RichPoint origen, RichPoint desti) { // Tipus pot ser MANHATTAN o
+                                                                                       // EUCLIDIA
         ArrayList<RichPoint> path = new ArrayList<>();
 
+        // Implementa l'algoritme aquí
+        // Cream oberts, tancats i les variables necessaries per l'algoritme
         ArrayList<RichPoint> tancats = new ArrayList<>();
-        Queue<RichPoint> oberts = new PriorityQueue<>();
+        Queue<RichPoint> oberts = new PriorityQueue<>();// Oberts es un heap perque es cerca heuristica
         RichPoint actual = null;
 
         ArrayList<RichPoint> successors;
         boolean trobat = false;
 
-        origen.distanceFromOrigin = 0;
+        // Afegim el node inicial a la llista de tancats
+        origen.distanceFromOrigin = 0; // El primer node té distancia zero a si mateix
         oberts.add(origen);
 
+        // Mentre no trobem el cami i hagi nodes per visitar iteram
         while (!trobat && !oberts.isEmpty()) {
 
+            // Agafam el primer
             actual = oberts.poll();
 
+            // Si hem trobat el node final aturem la cerca
             if (actual.equals(desti)) {
                 trobat = true;
             } else {
+                // Si no
+                // Agafam els successors valids
                 successors = getAdjacentPoints(actual);
+                // Afegim cada successor que no estigui dins oberts ni tancats a oberts
                 for (RichPoint successor : successors) {
 
                     successor.distanceFromOrigin = actual.distanceFromOrigin + 1;
@@ -268,11 +250,13 @@ public class Explorer extends BaseAgent<Executable> {
 
                 }
 
+                // Ficam el primer element de la coa d'oberts a la llista de tancats
                 tancats.add(new RichPoint(actual.x, actual.y, actual.previous));
             }
 
         }
 
+        // Crear camí
         RichPoint previ = desti;
         actual = actual.previous;
         while (!actual.equals(origen)) {
@@ -299,4 +283,5 @@ public class Explorer extends BaseAgent<Executable> {
     private RichPoint subtractPoints(RichPoint p1, RichPoint p2) {
         return new RichPoint(p1.x - p2.x, p1.y - p2.y);
     }
+
 }

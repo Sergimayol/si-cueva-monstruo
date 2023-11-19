@@ -2,23 +2,22 @@ package agent;
 
 import java.awt.Point;
 
-import agent.labels.CharacteristicLabels;
 import agent.rules.BC;
 import agent.rules.Characteristic;
 import agent.rules.Condition;
 import agent.rules.Rule;
 
-public abstract class BaseAgent<T> {
+public abstract class GridAgent<T> {
 
     protected Characteristic[] characteristics;
     protected BC<T> bc;
 
-    public void addRule(CharacteristicLabels[] indices, T action) {
-        int[] indicesInt = new int[indices.length];
-        for (int i = 0; i < indices.length; i++) {
-            indicesInt[i] = indices[i].ordinal();
-        }
-        this.bc.addProdRule(new Rule<>(new Condition(selectCharacteristics(this.characteristics, indicesInt)), action));
+    public void addProdRule(Rule<T> rule) {
+        this.bc.addProdRule(rule);
+    }
+
+    public void addProdRule(int[] indices, T action) {
+        this.bc.addProdRule(new Rule<>(new Condition(selectCharacteristics(this.characteristics, indices)), action));
     }
 
     public void updateFacts(Point position) {
@@ -41,7 +40,7 @@ public abstract class BaseAgent<T> {
         return this.bc.toStringEvaluated();
     }
 
-    public abstract void processInputSensors(boolean[] sensors);
+    public abstract void processPerceptions(boolean[] perceptions);
 
     public void setCharacteristics(Characteristic[] characteristics) {
         this.characteristics = characteristics;
@@ -51,6 +50,7 @@ public abstract class BaseAgent<T> {
         return this.characteristics;
     }
 
+    // ==========================================================================
     private Characteristic[] selectCharacteristics(Characteristic[] characteristics, int[] indices) {
         Characteristic[] resultCharacteristics = new Characteristic[indices.length];
         for (int i = 0; i < indices.length; i++) {

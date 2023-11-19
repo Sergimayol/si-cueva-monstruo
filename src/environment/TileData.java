@@ -1,6 +1,9 @@
-package env;
 
-public class TileData {
+package environment;
+
+import java.io.Serializable;
+
+public class TileData implements Serializable {
 
     // Signals
     private int hedorCounter;
