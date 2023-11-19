@@ -17,36 +17,33 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class MonstersCaveGui extends JFrame {
+public class ViewContent extends JFrame {
 
-    private final int INITIAL_SIZE = 15;
+    private static final int INITIAL_SIZE = 15;
 
     private Cave cave;
     private OptionsPanel options;
     private MapsPanel mapsPanel;
     private Environment<Explorer> env;
-    private ExecutorService environmentExecutor = Executors.newSingleThreadExecutor();
-    private ExecutorService animationExecutor = Executors.newFixedThreadPool(4);
+    private transient ExecutorService environmentExecutor = Executors.newSingleThreadExecutor();
+    private transient ExecutorService animationExecutor = Executors.newFixedThreadPool(4);
     private ExplorerDisplayer[] explorerDisplayers;
     private FeaturesPanel featuresPanel;
 
-    public MonstersCaveGui() {
+    public ViewContent() {
 
-        // Appereance
         super("Monsters' cave");
         this.setIconImage(Helpers.readImage("./assets/images/monster.png"));
 
-        // Layout
         this.setLayout(new BorderLayout());
 
-        // Functionality
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         initComponents();
     }
@@ -56,7 +53,8 @@ public class MonstersCaveGui extends JFrame {
         try {
             Thread.sleep(500);
         } catch (InterruptedException ex) {
-            Logger.getLogger(MonstersCaveGui.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ViewContent.class.getName()).log(Level.SEVERE, null, ex);
+            Thread.currentThread().interrupt();
         }
         this.setResizable(false);
         this.setLocationRelativeTo(null);
@@ -110,8 +108,6 @@ public class MonstersCaveGui extends JFrame {
 
         this.mapsPanel.setMapDisplayers(explorers, this.env.getInitialPos(), getExplorerImages(explorerDisplayers));
 
-        // this.options.setRobotDisplayerActiveReference(explorerDisplayers.getIsActiveReference());
-
         this.cave = new Cave(info.getTiles(), this, env, explorerDisplayers);
         this.add(cave, BorderLayout.CENTER);
 
@@ -130,7 +126,7 @@ public class MonstersCaveGui extends JFrame {
 
         int nAgents = this.options.getNumberOfExplorers();
 
-        this.env = new Environment<Explorer>(n, nAgents, this);
+        this.env = new Environment<>(n, nAgents, this);
 
         Explorer[] explorers = new Explorer[nAgents];
         for (int i = 0; i < explorers.length; i++) {
@@ -144,8 +140,6 @@ public class MonstersCaveGui extends JFrame {
         this.explorerDisplayers = createExplorerDisplayers(agents);
 
         this.mapsPanel.setMapDisplayers(explorers, this.env.getInitialPos(), getExplorerImages(explorerDisplayers));
-
-        // this.options.setRobotDisplayerActiveReference(robotDisplayer.getIsActiveReference());
 
         this.cave = new Cave(n, this, env, explorerDisplayers);
         this.add(cave, BorderLayout.CENTER);
@@ -175,10 +169,9 @@ public class MonstersCaveGui extends JFrame {
                                 return;
                             }
 
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(MonstersCaveGui.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (ExecutionException ex) {
-                            Logger.getLogger(MonstersCaveGui.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InterruptedException | ExecutionException ex) {
+                            Logger.getLogger(ViewContent.class.getName()).log(Level.SEVERE, null, ex);
+                            Thread.currentThread().interrupt();
                         }
                     }
 
@@ -194,7 +187,7 @@ public class MonstersCaveGui extends JFrame {
                     try {
                         futures = animationExecutor.invokeAll(tasks);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
 
                 }
@@ -213,12 +206,8 @@ public class MonstersCaveGui extends JFrame {
     public void finishRound() {
         this.options.stop();
         this.env.resetAgentsFinished();
-        // this.unlockCave();
 
         (new Result(this, this.env.getAgents(), getExplorerImages(explorerDisplayers))).showResults();
-        // JOptionPane.showMessageDialog(this, "Busqueda finalizada", "RESULTADOS",
-        // JOptionPane.INFORMATION_MESSAGE);
-
     }
 
     private class AnimationExecutor implements Callable<Boolean> {

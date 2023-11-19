@@ -44,7 +44,7 @@ public class OptionsPanel extends JPanel {
     private final String baseImagesPath = "./assets/images/";
     private final String extension = ".png";
 
-    private final MonstersCaveGui gui;
+    private final ViewContent gui;
     private JSlider speedSlider;
     private JSlider nExplorersSlider;
     private int currentSelectedEntityIndex = 0;
@@ -62,7 +62,7 @@ public class OptionsPanel extends JPanel {
     private JFormattedTextField inputDimsTablero;
     private int dimsTableroPrevias;
 
-    public OptionsPanel(int n, MonstersCaveGui gui) {
+    public OptionsPanel(int n, ViewContent gui) {
         try {
             this.entitiesClass = new Class[] {
                     Class.forName("ui.entities.Hole"),

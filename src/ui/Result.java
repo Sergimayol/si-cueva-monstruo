@@ -21,7 +21,7 @@ public class Result extends JDialog {
     private final Font fontResult = new Font("Calibri", Font.PLAIN, 30);
     private final Color winnerColor = new Color(0, 163, 33);
 
-    public Result(MonstersCaveGui gui, Explorer[] explorers, BufferedImage[] imgs) {
+    public Result(ViewContent gui, Explorer[] explorers, BufferedImage[] imgs) {
         super(gui, true);
 
         this.setTitle("Resultados");

@@ -1,6 +1,6 @@
 package main;
 
-import ui.MonstersCaveGui;
+import ui.ViewContent;
 
 public class Main {
 
@@ -9,7 +9,7 @@ public class Main {
     }
 
     public void start() {
-        MonstersCaveGui gui = new MonstersCaveGui();
+        ViewContent gui = new ViewContent();
         gui.showGui();
     }
 }

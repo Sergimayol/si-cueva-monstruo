@@ -25,7 +25,7 @@ public class FeaturesPanel extends JPanel {
 
     JCheckBox bridgeCheck;
 
-    public FeaturesPanel(MonstersCaveGui gui) {
+    public FeaturesPanel(ViewContent gui) {
 
         this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(2, 0, 0, 0, Color.black),

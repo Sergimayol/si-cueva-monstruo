@@ -9,9 +9,9 @@ import javax.swing.JMenuItem;
 
 public class MenuBar extends JMenuBar {
 
-    private final MonstersCaveGui gui;
+    private final ViewContent gui;
 
-    public MenuBar(MonstersCaveGui gui) {
+    public MenuBar(ViewContent gui) {
         this.gui = gui;
         initComponents();
     }

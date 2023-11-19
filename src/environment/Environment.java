@@ -1,7 +1,7 @@
 package environment;
 
 import agent.Explorer;
-import ui.MonstersCaveGui;
+import ui.ViewContent;
 import ui.entities.CaveEditor;
 
 import java.awt.Point;
@@ -13,7 +13,7 @@ public class Environment<T> implements Serializable {
     private TileData[][] map;
     private TileData[][] snapMap;
     private T[] agents;
-    private MonstersCaveGui gui;
+    private ViewContent gui;
     private boolean[] agentsFinished;
     private static Point[] initialAgentsPosBase = {
             new Point(1, 0),
@@ -30,7 +30,7 @@ public class Environment<T> implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public Environment(int n, int nAgents, MonstersCaveGui gui) {
+    public Environment(int n, int nAgents, ViewContent gui) {
         this.map = new TileData[n][n];
         this.gui = gui;
 
@@ -44,7 +44,7 @@ public class Environment<T> implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public Environment(TileData[][] map, int nAgents, MonstersCaveGui gui) {
+    public Environment(TileData[][] map, int nAgents, ViewContent gui) {
         this.gui = gui;
         this.map = map;
 

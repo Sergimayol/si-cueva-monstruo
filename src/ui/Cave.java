@@ -45,14 +45,14 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     private BufferedImage starterImage = null;
     private Graphics2D gAux = null;
     private BufferedImage biAux = null;
-    private MonstersCaveGui gui;
+    private ViewContent gui;
     private Environment<Explorer> env;
     private boolean explorersActive = false;
     private boolean caveBlocked = false;
     private int treasuresRemaining = 0;
 
     // Constructor del tauler
-    public Cave(int n, MonstersCaveGui gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
+    public Cave(int n, ViewContent gui, Environment<Explorer> env, ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
         this.gui = gui;
         this.env = env;
@@ -74,13 +74,8 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             try {
                 cl.getMethod("loadResizedImage", int.class, int.class)
                         .invoke(null, this.costatCasella, this.costatCasella);
-            } catch (NoSuchMethodException ex) {
-                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+                    | InvocationTargetException ex) {
                 Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -95,7 +90,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     // Constructor del tauler
-    public Cave(Tile[][] tiles, MonstersCaveGui gui, Environment<Explorer> env,
+    public Cave(Tile[][] tiles, ViewContent gui, Environment<Explorer> env,
             ExplorerDisplayer[] explorerDisplayers) {
         this.setLayout(null);
         this.gui = gui;
@@ -118,13 +113,8 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             try {
                 cl.getMethod("loadResizedImage", int.class, int.class)
                         .invoke(null, this.costatCasella, this.costatCasella);
-            } catch (NoSuchMethodException ex) {
-                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+                    | InvocationTargetException ex) {
                 Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -312,13 +302,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
                 return;
             }
 
-            // TODO: ADD A LOT OF STUFF TO BETTER HANDLE PUTTING OBJECTS
-            // if (this.robotDisplayer.isActive() && this.robotDisplayer.isOnTile(i, j)) {
-            // return;
-            // }
             Tile tile = tiles[i][j];
-
-            // System.out.println(this.env.getMap()[i][j]);
 
             if (this.buttonPressed == MouseEvent.BUTTON1 && !tile.hasEntity()) {
 
@@ -349,17 +333,10 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
             }
 
-            // System.out.println(this.env.getMap()[i][j]);
-
             this.repaint();
 
-        } catch (InstantiationException ex) {
-            Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
+        } catch (InstantiationException | SecurityException | IllegalArgumentException | InvocationTargetException
+                | IllegalAccessException ex) {
             Logger.getLogger(Cave.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
