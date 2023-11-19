@@ -14,7 +14,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import utils.ImageLoader;
+
+import utils.Helpers;
 
 public class FeaturesPanel extends JPanel {
 
@@ -57,13 +58,9 @@ public class FeaturesPanel extends JPanel {
             }
         });
 
-        // this.arrowsCheck.setIcon(new
-        // ImageIcon(ImageLoader.loadImageScaled("src/main/java/images/arrow.png",
-        // iconSize, iconSize)));
         arrowsPanel.add(arrowsCheck);
 
-        arrowsPanel.add(new JLabel("",
-                new ImageIcon(ImageLoader.loadImageScaled("./assets/images/arrow.png", iconSize, iconSize)),
+        arrowsPanel.add(new JLabel("", Helpers.escalateImageIcon("./assets/images/arrow.png", iconSize, iconSize),
                 SwingConstants.LEFT));
 
         JPanel bridgePanel = new JPanel();
@@ -72,18 +69,14 @@ public class FeaturesPanel extends JPanel {
 
         this.bridgeCheck = new JCheckBox("Tablones", true);
 
-        this.bridgeCheck.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JCheckBox check = (JCheckBox) e.getSource();
-                gui.setExplorersCanPutBridge(check.isSelected());
-            }
+        this.bridgeCheck.addActionListener(e -> {
+            JCheckBox check = (JCheckBox) e.getSource();
+            gui.setExplorersCanPutBridge(check.isSelected());
         });
 
         bridgePanel.add(bridgeCheck);
 
-        bridgePanel.add(new JLabel("",
-                new ImageIcon(ImageLoader.loadImageScaled("./assets/images/planks.png", iconSize, iconSize)),
+        bridgePanel.add(new JLabel("", Helpers.escalateImageIcon("./assets/images/planks.png", iconSize, iconSize),
                 SwingConstants.LEFT));
 
         this.add(arrowsPanel);

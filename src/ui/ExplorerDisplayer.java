@@ -11,7 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JComponent;
-import utils.ImageLoader;
+
+import utils.Helpers;
 import utils.MutableBoolean;
 
 public class ExplorerDisplayer extends JComponent {
@@ -66,8 +67,8 @@ public class ExplorerDisplayer extends JComponent {
         this.prevPosX = this.position.x;
         this.prevPosY = this.position.y;
         this.active = new MutableBoolean(false);
-        this.imageLeft = ImageLoader.loadImage("./assets/images/agents/explorer" + (id + 1) + "_left.png");
-        this.imageRight = ImageLoader.loadImage("./assets/images/agents/explorer" + (id + 1) + "_right.png");
+        this.imageLeft = Helpers.readImage("./assets/images/agents/explorer" + (id + 1) + "_left.png");
+        this.imageRight = Helpers.readImage("./assets/images/agents/explorer" + (id + 1) + "_right.png");
         this.image = imageLeft;
     }
 

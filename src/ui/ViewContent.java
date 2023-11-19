@@ -29,7 +29,6 @@ public class ViewContent extends JFrame {
 
     private Cave cave;
     private OptionsPanel options;
-    private MapsPanel mapsPanel;
     private Environment<Explorer> env;
     private transient ExecutorService environmentExecutor = Executors.newSingleThreadExecutor();
     private transient ExecutorService animationExecutor = Executors.newFixedThreadPool(4);
@@ -39,7 +38,7 @@ public class ViewContent extends JFrame {
     public ViewContent() {
 
         super("Monsters' cave");
-        this.setIconImage(Helpers.readImage("./assets/images/monster.png"));
+        this.setIconImage(Helpers.readImage("./assets/icon.png"));
 
         this.setLayout(new BorderLayout());
 
@@ -56,7 +55,7 @@ public class ViewContent extends JFrame {
             Logger.getLogger(ViewContent.class.getName()).log(Level.SEVERE, null, ex);
             Thread.currentThread().interrupt();
         }
-        this.setResizable(false);
+        this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -69,13 +68,7 @@ public class ViewContent extends JFrame {
         this.options = new OptionsPanel(INITIAL_SIZE, this);
         this.add(this.options, BorderLayout.WEST);
 
-        this.mapsPanel = new MapsPanel();
-
         this.addNewCave(INITIAL_SIZE);
-
-        this.add(this.mapsPanel, BorderLayout.EAST);
-
-        this.setJMenuBar(new MenuBar(this));
 
     }
 
@@ -105,8 +98,6 @@ public class ViewContent extends JFrame {
 
         // Create explorers array
         this.explorerDisplayers = createExplorerDisplayers(agents);
-
-        this.mapsPanel.setMapDisplayers(explorers, this.env.getInitialPos(), getExplorerImages(explorerDisplayers));
 
         this.cave = new Cave(info.getTiles(), this, env, explorerDisplayers);
         this.add(cave, BorderLayout.CENTER);
@@ -139,8 +130,6 @@ public class ViewContent extends JFrame {
 
         this.explorerDisplayers = createExplorerDisplayers(agents);
 
-        this.mapsPanel.setMapDisplayers(explorers, this.env.getInitialPos(), getExplorerImages(explorerDisplayers));
-
         this.cave = new Cave(n, this, env, explorerDisplayers);
         this.add(cave, BorderLayout.CENTER);
 
@@ -151,47 +140,50 @@ public class ViewContent extends JFrame {
 
     }
 
+    private void runAnimationGoBack(boolean step) {
+        List<Future<Boolean>> futures = null;
+        while (true) {
+            // Wait for animation to finish
+            if (futures != null) {
+                try {
+                    boolean robotActive = true;
+                    for (Future<Boolean> future : futures) {
+                        robotActive = robotActive && future.get();
+                    }
+                    if (!robotActive || step) {
+                        this.options.animationFinished();
+                        return;
+                    }
+
+                } catch (InterruptedException | ExecutionException ex) {
+                    Logger.getLogger(ViewContent.class.getName()).log(Level.SEVERE, null, ex);
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            // Run iteration of the environment
+            this.env.runIteration();
+
+            List<AnimationExecutor> tasks = new ArrayList<>();
+            for (int i = 0; i < this.env.getNAgents(); i++) {
+                // Execute animation for each agent
+                tasks.add(new AnimationExecutor(i));
+            }
+
+            try {
+                futures = animationExecutor.invokeAll(tasks);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+        }
+
+    }
+
     public void letExplorersGo(boolean canGo, boolean step) {
         this.cave.setExplorersActive(canGo);
         if (canGo) {
-            environmentExecutor.execute(() -> {
-                List<Future<Boolean>> futures = null;
-                while (true) {
-                    // Wait for animation to finish
-                    if (futures != null) {
-                        try {
-                            boolean robotActive = true;
-                            for (Future<Boolean> future : futures) {
-                                robotActive = robotActive && future.get();
-                            }
-                            if (!robotActive || step) {
-                                this.options.animationFinished();
-                                return;
-                            }
-
-                        } catch (InterruptedException | ExecutionException ex) {
-                            Logger.getLogger(ViewContent.class.getName()).log(Level.SEVERE, null, ex);
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-
-                    // Run iteration of the environment
-                    this.env.runIteration();
-
-                    List<AnimationExecutor> tasks = new ArrayList<>();
-                    for (int i = 0; i < this.env.getNAgents(); i++) {
-                        // Execute animation for each agent
-                        tasks.add(new AnimationExecutor(i));
-                    }
-
-                    try {
-                        futures = animationExecutor.invokeAll(tasks);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-
-                }
-            });
+            environmentExecutor.execute(() -> runAnimationGoBack(step));
         }
     }
 
@@ -246,11 +238,7 @@ public class ViewContent extends JFrame {
 
         this.explorerDisplayers = createExplorerDisplayers(agents);
 
-        this.mapsPanel.setMapDisplayers(explorers, this.env.getInitialPos(), getExplorerImages(explorerDisplayers));
-
         this.cave.setExplorerDisplayers(explorerDisplayers);
-
-        this.cave.setSizeMaps();
 
     }
 
@@ -303,14 +291,6 @@ public class ViewContent extends JFrame {
         return explorerDisplayers;
     }
 
-    public void updateMaps(BufferedImage img) {
-        this.mapsPanel.updateMaps(img);
-    }
-
-    public void setSizeMaps(int total, int tile, int frame, int nTiles) {
-        this.mapsPanel.setSizeMaps(total, tile, frame, nTiles);
-    }
-
     private BufferedImage[] getExplorerImages(ExplorerDisplayer[] expDisplayers) {
         BufferedImage[] imgs = new BufferedImage[expDisplayers.length];
         for (int i = 0; i < imgs.length; i++) {
@@ -322,7 +302,6 @@ public class ViewContent extends JFrame {
 
     public void takeTreasure(Point position) {
         this.cave.takeTreasure(position);
-        this.mapsPanel.updateCounters();
     }
 
     public void killMonster(Point monsterPos) {

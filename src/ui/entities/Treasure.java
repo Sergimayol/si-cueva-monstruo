@@ -2,10 +2,11 @@
 package ui.entities;
 
 import environment.TileData;
+import utils.Helpers;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import utils.ImageLoader;
 
 public class Treasure extends Entity implements CaveEditor {
 
@@ -25,8 +26,8 @@ public class Treasure extends Entity implements CaveEditor {
     }
 
     public static void loadResizedImage(int width, int height) {
-        imageClosed = ImageLoader.loadImageScaled(imagePathClosed, width, height);
-        imageOpened = ImageLoader.loadImageScaled(imagePathOpened, width, height);
+        imageClosed = Helpers.readImage(imagePathClosed, width, height);
+        imageOpened = Helpers.readImage(imagePathOpened, width, height);
     }
 
     @Override

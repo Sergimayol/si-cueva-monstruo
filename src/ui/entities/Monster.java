@@ -5,7 +5,8 @@ import environment.TileData;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import utils.ImageLoader;
+
+import utils.Helpers;
 
 public class Monster extends Entity implements CaveEditor {
 
@@ -25,8 +26,8 @@ public class Monster extends Entity implements CaveEditor {
     }
 
     public static void loadResizedImage(int width, int height) {
-        imageAlive = ImageLoader.loadImageScaled(imagePathAlive, width, height);
-        imageDead = ImageLoader.loadImageScaled(imagePathDead, width, height);
+        imageAlive = Helpers.readImage(imagePathAlive, width, height);
+        imageDead = Helpers.readImage(imagePathDead, width, height);
     }
 
     @Override

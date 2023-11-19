@@ -26,7 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
-import utils.ImageLoader;
+
+import utils.Helpers;
 
 public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -62,8 +63,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         this.tiles = new Tile[costat][costat];
         this.explorerDisplayers = explorerDisplayers;
 
-        this.setSizeMaps();
-
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
@@ -80,8 +79,7 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             }
         }
 
-        BufferedImage backgroundImage = ImageLoader.loadImageScaled(Tile.backgroundImagePath, costatCasella,
-                costatCasella);
+        BufferedImage backgroundImage = Helpers.readImage(Tile.backgroundImagePath, costatCasella, costatCasella);
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 tiles[i][j] = new Tile(i, j, costatCasella, dimsBorde, backgroundImage);
@@ -101,8 +99,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         this.tiles = tiles;
         this.explorerDisplayers = explorerDisplayers;
 
-        this.setSizeMaps();
-
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
@@ -119,8 +115,8 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
             }
         }
 
-        BufferedImage backgroundImage = ImageLoader.loadImageScaled(Tile.backgroundImagePath, costatCasella,
-                costatCasella);
+        BufferedImage backgroundImage = Helpers.readImage(Tile.backgroundImagePath, costatCasella, costatCasella);
+
         for (int i = 0; i < costat; i++) {
             for (int j = 0; j < costat; j++) {
                 tiles[i][j].setBackgroundImage(backgroundImage);
@@ -134,10 +130,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
 
     public Tile[][] getTiles() {
         return this.tiles;
-    }
-
-    public void setSizeMaps() {
-        this.gui.setSizeMaps(dimensions.width, costatCasella, dimsBorde, costat);
     }
 
     public void setExplorerDisplayers(ExplorerDisplayer[] explorerDisplayers) {
@@ -195,8 +187,6 @@ public class Cave extends JPanel implements MouseListener, MouseMotionListener {
         }
 
         gbiAux.dispose();
-
-        this.gui.updateMaps(biAux);
 
         g.drawImage(biAux, 0, 0, this);
 

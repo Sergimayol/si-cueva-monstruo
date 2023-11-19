@@ -2,10 +2,11 @@
 package ui.entities;
 
 import environment.TileData;
+import utils.Helpers;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import utils.ImageLoader;
 
 public class Hole extends Entity implements CaveEditor {
 
@@ -25,8 +26,8 @@ public class Hole extends Entity implements CaveEditor {
     }
 
     public static void loadResizedImage(int width, int height) {
-        image = ImageLoader.loadImageScaled(imagePath, width, height);
-        imageCovered = ImageLoader.loadImageScaled(imageCoveredPath, width, height);
+        image = Helpers.readImage(imagePath, width, height);
+        imageCovered = Helpers.readImage(imageCoveredPath, width, height);
     }
 
     @Override
