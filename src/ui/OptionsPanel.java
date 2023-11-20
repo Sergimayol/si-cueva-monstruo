@@ -236,7 +236,9 @@ public class OptionsPanel extends JPanel {
         autoButtons.setLayout(new BoxLayout(autoButtons, BoxLayout.X_AXIS));
 
         startButton = createButton("Arrancar", buttonAction);
+        startButton.setBackground(new Color(0, 127, 92).brighter());
         stopButton = createButton("Parar", buttonAction, false);
+        stopButton.setBackground(new Color(227, 170, 170));
 
         autoButtons.add(startButton);
         autoButtons.add(Box.createRigidArea(new Dimension(10, 1)));
@@ -260,6 +262,7 @@ public class OptionsPanel extends JPanel {
         manualButtons.setLayout(new BoxLayout(manualButtons, BoxLayout.X_AXIS));
 
         stepButton = createButton("Paso", buttonAction);
+        stepButton.setBackground(new Color(0, 127, 92).brighter());
         JButton resetButton = createButton("Reset", e -> changeNumberOfExplorers());
         resetButton.setBackground(new Color(227, 170, 170));
 
